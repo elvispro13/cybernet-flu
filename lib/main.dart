@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Cybernet Pay '),
+          title: const Text('Cybernet Pay'),
         ),
         body: const Center(
           child: Text('Probando Cybernet Pay'),
