@@ -43,6 +43,7 @@ dependencies:
   riverpod_lint: ^2.3.10
   flutter_riverpod: ^2.5.1
   auto_size_text: ^3.0.0
+  font_awesome_flutter: ^10.7.0
 
 dev_dependencies:
   flutter_test:

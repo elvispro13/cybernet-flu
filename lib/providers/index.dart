@@ -1,0 +1,1 @@
+export 'tema_provider.dart';

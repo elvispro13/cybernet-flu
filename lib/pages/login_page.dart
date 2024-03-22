@@ -1,6 +1,8 @@
 import 'package:cybernet/helpers/size_config.dart';
+import 'package:cybernet/routes/router.dart';
 import 'package:cybernet/widgets/logo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -13,9 +15,9 @@ class LoginPage extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              Logo(titulo: 'Inicio de sesión'),
+              const Logo(titulo: 'Inicio de sesión'),
               _Formulario(),
-              SizedBox(
+              const SizedBox(
                 height: 200,
               ),
             ],
@@ -26,12 +28,12 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-class _Formulario extends StatefulWidget {
+class _Formulario extends ConsumerStatefulWidget {
   @override
-  State<_Formulario> createState() => __FormularioState();
+  FormularioState createState() => FormularioState();
 }
 
-class __FormularioState extends State<_Formulario> {
+class FormularioState extends ConsumerState<_Formulario> {
   final usuarioCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -79,6 +81,7 @@ class __FormularioState extends State<_Formulario> {
                 if (formKey.currentState!.validate()) {
                   // print('Usuario: ${usuarioCtrl.text}');
                   // print('Contraseña: ${passwordCtrl.text}');
+                  ref.read(appRouterProvider).goNamed('home');
                 }
               },
               style: ButtonStyle(

@@ -14,7 +14,7 @@ class Logo extends StatelessWidget {
         child: Column(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(50.0),
               child: const Image(image: AssetImage('assets/logo.png')),
             ),
             AutoSizeText(
