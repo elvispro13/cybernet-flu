@@ -1,3 +1,4 @@
+import 'package:cybernet/pages/impresora_page.dart';
 import 'package:cybernet/pages/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +19,15 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       builder: (BuildContext context, GoRouterState state) {
         return const PrincipalPage();
       },
-    )
+      routes: [
+        GoRoute(
+          name: 'print',
+          path: 'imprimir',
+          builder: (BuildContext context, GoRouterState state) {
+            return Impresora();
+          },
+        ),
+      ],
+    ),
   ]);
 });

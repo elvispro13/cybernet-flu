@@ -1,4 +1,4 @@
-package com.example.cybernet
+package com.tomorrowistoday.cybernetpay
 
 import io.flutter.embedding.android.FlutterActivity
 

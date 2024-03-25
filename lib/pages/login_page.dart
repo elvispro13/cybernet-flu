@@ -1,4 +1,5 @@
 import 'package:cybernet/helpers/size_config.dart';
+import 'package:cybernet/model/model.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:cybernet/widgets/logo.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ class FormularioState extends ConsumerState<_Formulario> {
   final usuarioCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  bool cargando = false;
 
   @override
   void initState() {
@@ -62,6 +64,7 @@ class FormularioState extends ConsumerState<_Formulario> {
                 ),
                 validator: (valor) =>
                     valor!.isEmpty ? 'Usuario requerido' : null,
+                textInputAction: TextInputAction.next,
               ),
             ),
             formItemsDesign(
@@ -79,9 +82,10 @@ class FormularioState extends ConsumerState<_Formulario> {
             ElevatedButton(
               onPressed: () {
                 if (formKey.currentState!.validate()) {
-                  // print('Usuario: ${usuarioCtrl.text}');
-                  // print('Contraseña: ${passwordCtrl.text}');
-                  ref.read(appRouterProvider).goNamed('home');
+                  setState(() {
+                    cargando = true;
+                  });
+                  _iniciarSesion(usuarioCtrl.text, passwordCtrl.text);
                 }
               },
               style: ButtonStyle(
@@ -92,19 +96,36 @@ class FormularioState extends ConsumerState<_Formulario> {
                   ),
                 ),
               ),
-              child: const SizedBox(
-                  width: double.infinity,
-                  height: 60,
-                  child: Center(
-                      child: Text(
-                    'Ingresar',
-                    style: TextStyle(fontSize: 25, color: Colors.white),
-                  ))),
+              child: cargando
+                  ? const CircularProgressIndicator()
+                  : const SizedBox(
+                      width: double.infinity,
+                      height: 60,
+                      child: Center(
+                        child: Text(
+                          'Ingresar',
+                          style: TextStyle(fontSize: 25, color: Colors.white),
+                        ),
+                      ),
+                    ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  _iniciarSesion(String usuario, String password) async {
+    final u = Usuario();
+    u.User = usuario;
+    u.Password = password;
+    await u.save();
+
+    setState(() {
+      cargando = false;
+    });
+
+    ref.read(appRouterProvider).goNamed('home');
   }
 }
 
