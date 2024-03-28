@@ -23,6 +23,7 @@ dependencies:
   auto_size_text: ^3.0.0
   font_awesome_flutter: ^10.7.0
   bluetooth_print: ^4.3.0
+  local_auth: ^2.2.0
 
 dev_dependencies:
   flutter_test:

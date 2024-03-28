@@ -1,3 +1,4 @@
+import 'package:cybernet/helpers/local_auth.dart';
 import 'package:cybernet/helpers/size_config.dart';
 import 'package:cybernet/model/model.dart';
 import 'package:cybernet/routes/router.dart';
@@ -70,24 +71,20 @@ class FormularioState extends ConsumerState<_Formulario> {
             formItemsDesign(
               Icons.lock,
               TextFormField(
-                obscureText: true,
-                controller: passwordCtrl,
-                decoration: const InputDecoration(
-                  labelText: 'Contraseña',
-                ),
-                validator: (valor) =>
-                    valor!.isEmpty ? 'Contraseña requerida' : null,
-              ),
+                  obscureText: true,
+                  controller: passwordCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Contraseña',
+                  ),
+                  validator: (valor) =>
+                      valor!.isEmpty ? 'Contraseña requerida' : null,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (value) =>
+                      _iniciarSesion(usuarioCtrl.text, passwordCtrl.text)),
             ),
             ElevatedButton(
-              onPressed: () {
-                if (formKey.currentState!.validate()) {
-                  setState(() {
-                    cargando = true;
-                  });
-                  _iniciarSesion(usuarioCtrl.text, passwordCtrl.text);
-                }
-              },
+              onPressed: () =>
+                  _iniciarSesion(usuarioCtrl.text, passwordCtrl.text),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.blue),
                 shape: MaterialStateProperty.all(
@@ -116,14 +113,16 @@ class FormularioState extends ConsumerState<_Formulario> {
   }
 
   _iniciarSesion(String usuario, String password) async {
+    final biometricAuth = await LocalAuth.authenticate();
+    if (!biometricAuth) return;
+    if (!formKey.currentState!.validate()) return;
+    setState(() => cargando = true);
     final u = Usuario();
     u.User = usuario;
     u.Password = password;
-    await u.save();
+    // await u.save();
 
-    setState(() {
-      cargando = false;
-    });
+    setState(() => cargando = false);
 
     ref.read(appRouterProvider).goNamed('home');
   }

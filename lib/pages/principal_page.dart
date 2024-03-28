@@ -26,25 +26,7 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
               },
               child: const Text('Impresora'),
             ),
-            FutureBuilder(
-              future: cargarUsuarios(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.hasData) {
-                  List<Usuario> usuarios = snapshot.data;
-                  return Column(
-                    children: usuarios
-                        .map((Usuario e) => ListTile(
-                              title: Text('${e.User}'),
-                              subtitle: Text('${e.Password}'),
-                            ))
-                        .toList(),
-                  );
-                }
-
-                return const CircularProgressIndicator();
-              },
-            ),
+            _lista(),
           ],
         ),
       ),
@@ -53,5 +35,27 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
 
   cargarUsuarios() async {
     return await Usuario().select().toList();
+  }
+
+  _lista() {
+    return FutureBuilder(
+      future: cargarUsuarios(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasData) {
+          List<Usuario> usuarios = snapshot.data;
+          return Column(
+            children: usuarios
+                .map((Usuario e) => ListTile(
+                      title: Text('${e.User}'),
+                      subtitle: Text('${e.Password}'),
+                    ))
+                .toList(),
+          );
+        }
+
+        return const CircularProgressIndicator();
+      },
+    );
   }
 }
