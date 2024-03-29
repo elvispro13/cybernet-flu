@@ -1,7 +1,8 @@
-import 'package:cybernet/helpers/local_auth.dart';
 import 'package:cybernet/helpers/size_config.dart';
-import 'package:cybernet/model/model.dart';
+import 'package:cybernet/helpers/utilidades.dart';
+import 'package:cybernet/providers/login_provider.dart';
 import 'package:cybernet/routes/router.dart';
+import 'package:cybernet/services/login_service.dart';
 import 'package:cybernet/widgets/logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -79,12 +80,12 @@ class FormularioState extends ConsumerState<_Formulario> {
                   validator: (valor) =>
                       valor!.isEmpty ? 'Contraseña requerida' : null,
                   textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (value) =>
-                      _iniciarSesion(usuarioCtrl.text, passwordCtrl.text)),
+                  onFieldSubmitted: (value) => _iniciarSesion(
+                      context, usuarioCtrl.text, passwordCtrl.text)),
             ),
             ElevatedButton(
               onPressed: () =>
-                  _iniciarSesion(usuarioCtrl.text, passwordCtrl.text),
+                  _iniciarSesion(context, usuarioCtrl.text, passwordCtrl.text),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.blue),
                 shape: MaterialStateProperty.all(
@@ -112,19 +113,25 @@ class FormularioState extends ConsumerState<_Formulario> {
     );
   }
 
-  _iniciarSesion(String usuario, String password) async {
-    final biometricAuth = await LocalAuth.authenticate();
-    if (!biometricAuth) return;
+  _iniciarSesion(BuildContext context, String usuario, String password) async {
+    // final biometricAuth = await LocalAuth.authenticate();
+    // if (!biometricAuth) return;
     if (!formKey.currentState!.validate()) return;
     setState(() => cargando = true);
-    final u = Usuario();
-    u.User = usuario;
-    u.Password = password;
-    // await u.save();
+
+    final auth = await LoginService().iniciarSesion(usuario, password);
 
     setState(() => cargando = false);
+    if (!auth.autenticado) {
+      if (context.mounted) {
+        mostrarAlerta(context, 'Aviso', auth.alerta.message);
+      }
+      return;
+    }
 
-    ref.read(appRouterProvider).goNamed('home');
+    ref.read(loginProvider.notifier).state = auth.login;
+
+    ref.read(appRouterProvider).goNamed('loading');
   }
 }
 
@@ -134,3 +141,8 @@ formItemsDesign(icon, item) {
     child: Card(child: ListTile(leading: Icon(icon), title: item)),
   );
 }
+
+// final u = Usuario();
+// u.User = usuario;
+// u.Password = password;
+// await u.save();

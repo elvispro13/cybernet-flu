@@ -14,6 +14,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       },
     ),
     GoRoute(
+      name: 'loading',
+      path: '/loading',
+      builder: (BuildContext context, GoRouterState state) {
+        return const LoadingPage();
+      },
+    ),
+    GoRoute(
       name: 'home',
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
