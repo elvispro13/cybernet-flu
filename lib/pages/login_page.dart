@@ -1,5 +1,5 @@
 import 'package:cybernet/helpers/size_config.dart';
-import 'package:cybernet/helpers/utilidades.dart';
+import 'package:cybernet/providers/global_provider.dart';
 import 'package:cybernet/providers/login_provider.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:cybernet/services/login_service.dart';
@@ -80,12 +80,12 @@ class FormularioState extends ConsumerState<_Formulario> {
                   validator: (valor) =>
                       valor!.isEmpty ? 'Contraseña requerida' : null,
                   textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (value) => _iniciarSesion(
-                      context, usuarioCtrl.text, passwordCtrl.text)),
+                  onFieldSubmitted: (value) =>
+                      _iniciarSesion(usuarioCtrl.text, passwordCtrl.text)),
             ),
             ElevatedButton(
               onPressed: () =>
-                  _iniciarSesion(context, usuarioCtrl.text, passwordCtrl.text),
+                  _iniciarSesion(usuarioCtrl.text, passwordCtrl.text),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.blue),
                 shape: MaterialStateProperty.all(
@@ -113,7 +113,7 @@ class FormularioState extends ConsumerState<_Formulario> {
     );
   }
 
-  _iniciarSesion(BuildContext context, String usuario, String password) async {
+  _iniciarSesion(String usuario, String password) async {
     // final biometricAuth = await LocalAuth.authenticate();
     // if (!biometricAuth) return;
     if (!formKey.currentState!.validate()) return;
@@ -123,9 +123,7 @@ class FormularioState extends ConsumerState<_Formulario> {
 
     setState(() => cargando = false);
     if (!auth.autenticado) {
-      if (context.mounted) {
-        mostrarAlerta(context, 'Aviso', auth.alerta.message);
-      }
+      ref.read(alertaProvider.notifier).state = auth.alerta.message;
       return;
     }
 

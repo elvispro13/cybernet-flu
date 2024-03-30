@@ -12,20 +12,20 @@ final saldosPendientesProvider = FutureProvider<SaldoView>((ref) async {
 
   final url = Uri.parse('${Environment.apiUrl}/saldos-pendientes');
 
-  try {
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${login.accessToken}',
-    });
+  // try {
+  //   final response = await http.get(url, headers: {
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer ${login.accessToken}',
+  //   });
 
-    if (response.statusCode == 200) {
-      final login = loginFromJson(response.body);
-    } else if (response.statusCode == 401) {
-      final alerta = alertaFromJson(response.body);
-    } else {
-      final alerta = alertaFromJson("{message: 'Error de conexión'}");
-    }
-  } on Exception {
-    final alerta = alertaFromJson("{message: 'Error de conexión'}");
-  }
+  //   if (response.statusCode == 200) {
+  //     final login = loginFromJson(response.body);
+  //   } else if (response.statusCode == 401) {
+  //     final alerta = alertaFromJson(response.body);
+  //   } else {
+  //     final alerta = alertaFromJson("{message: 'Error de conexión'}");
+  //   }
+  // } on Exception {
+  //   final alerta = alertaFromJson("{message: 'Error de conexión'}");
+  // }
 });
