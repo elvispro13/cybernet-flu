@@ -21,8 +21,6 @@ class _LoadingPageState extends ConsumerState<LoadingPage> {
             const Image(image: AssetImage('assets/logo.png')),
             const SizedBox(height: 20),
             const CircularProgressIndicator(),
-            const SizedBox(height: 20),
-            Text('Cargando...${login.permisos.length}'),
           ],
         ),
       ),

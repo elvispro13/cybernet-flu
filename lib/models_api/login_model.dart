@@ -19,6 +19,9 @@ class Login {
     required this.permisos,
   });
 
+  bool can(String permiso) =>
+      permisos.any((element) => element.name == permiso);
+
   factory Login.fromJson(Map<String, dynamic> json) => Login(
         accessToken: json["access_token"],
         tokenType: json["token_type"],
