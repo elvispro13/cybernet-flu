@@ -1,5 +1,3 @@
-import 'package:cybernet/helpers/utilidades.dart';
-import 'package:cybernet/providers/global_provider.dart';
 import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:flutter/material.dart';
@@ -20,13 +18,6 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     SystemChrome.setPreferredOrientations(ref.watch(orientacionProvider));
     final router = ref.watch(appRouterProvider);
-
-    ref.listen(alertaProvider, (previous, next) { 
-      if (next.isNotEmpty) {
-        mostrarAlerta(context, 'Aviso', next);
-        ref.read(alertaProvider.notifier).state = '';
-      }
-    });
 
     return MaterialApp.router(
       title: 'Cybernet',

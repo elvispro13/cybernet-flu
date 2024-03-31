@@ -1,4 +1,8 @@
+import 'package:cybernet/helpers/utilidades.dart';
+import 'package:cybernet/providers/global_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -39,4 +43,14 @@ Widget appPrincipal({required Widget child, required String titulo}) {
       ),
     ),
   );
+}
+
+Widget addAlerta(BuildContext context, ProviderRef<GoRouter> ref, Widget child) {
+  ref.listen(alertaProvider, (previous, next) {
+    if (next.isNotEmpty) {
+      mostrarAlerta(context, 'Aviso', next);
+      ref.read(alertaProvider.notifier).state = '';
+    }
+  });
+  return child;
 }

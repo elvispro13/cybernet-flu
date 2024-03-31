@@ -12,6 +12,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -49,7 +50,6 @@ class FormularioState extends ConsumerState<_Formulario> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -119,15 +119,15 @@ class FormularioState extends ConsumerState<_Formulario> {
     if (!formKey.currentState!.validate()) return;
     setState(() => cargando = true);
 
-    final auth = await LoginService().iniciarSesion(usuario, password);
+    final res = await LoginService.iniciarSesion(usuario, password);
 
     setState(() => cargando = false);
-    if (!auth.autenticado) {
-      ref.read(alertaProvider.notifier).state = auth.alerta.message;
+    if (!res.success) {
+      ref.read(alertaProvider.notifier).state = res.message;
       return;
     }
 
-    ref.read(loginProvider.notifier).state = auth.login;
+    ref.read(loginProvider.notifier).state = res.data;
 
     ref.read(appRouterProvider).goNamed('loading');
   }
