@@ -14,7 +14,7 @@ class SaldosService {
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${login.accessToken}',
-      }).timeout(const Duration(seconds: 10));
+      }).timeout(const Duration(seconds: 20));
 
       if (response.statusCode == 200) {
         res.success = true;

@@ -1,8 +1,7 @@
 import 'package:cybernet/helpers/widget_helpers.dart';
-import 'package:cybernet/model/model.dart';
-import 'package:cybernet/routes/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PrincipalPage extends ConsumerStatefulWidget {
   const PrincipalPage({super.key});
@@ -20,42 +19,53 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                ref.read(appRouterProvider).goNamed('print');
-              },
-              child: const Text('Impresora'),
+            const SizedBox(
+              height: 15,
             ),
-            _lista(),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  textStyle: const TextStyle(fontSize: 20),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100.0)),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    FaIcon(FontAwesomeIcons.cashRegister),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text('PAGAR'),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {},
+                icon: const FaIcon(FontAwesomeIcons.receipt),
+                label: const Text('FACTURAS'),
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  textStyle: const TextStyle(fontSize: 20),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100.0)),
+                ),
+              ),
+            ),
           ],
         ),
       ),
-    );
-  }
-
-  cargarUsuarios() async {
-    return await Usuario().select().toList();
-  }
-
-  _lista() {
-    return FutureBuilder(
-      future: cargarUsuarios(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.hasData) {
-          List<Usuario> usuarios = snapshot.data;
-          return Column(
-            children: usuarios
-                .map((Usuario e) => ListTile(
-                      title: Text('${e.User}'),
-                      subtitle: Text('${e.Password}'),
-                    ))
-                .toList(),
-          );
-        }
-
-        return const CircularProgressIndicator();
-      },
     );
   }
 }
