@@ -5,11 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
-final _scaffoldKey = GlobalKey<ScaffoldState>();
-
 Widget appPrincipal({required Widget child, required String titulo}) {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   return Scaffold(
-    key: _scaffoldKey,
+    key: scaffoldKey,
     drawer: Drawer(
       child: Container(
         color: Colors.white,
@@ -20,8 +19,39 @@ Widget appPrincipal({required Widget child, required String titulo}) {
       leading: IconButton(
         icon: const Icon(Icons.menu, color: Colors.white),
         onPressed: () {
-          _scaffoldKey.currentState!.openDrawer();
+          scaffoldKey.currentState!.openDrawer();
         },
+      ),
+      title: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(50.0),
+            child: const Image(image: AssetImage('assets/logo.png'), width: 50),
+          ),
+          const SizedBox(width: 10),
+          Text(
+            titulo,
+            style: const TextStyle(fontSize: 15, color: Colors.white),
+          ),
+        ],
+      ),
+    ),
+    body: SafeArea(
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: child,
+      ),
+    ),
+  );
+}
+
+Widget appPrincipalSinSlide({required Widget child, required String titulo, required Function()? onBack}) {
+  return Scaffold(
+    appBar: AppBar(
+      backgroundColor: Colors.blue,
+      leading: IconButton(
+        icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.white),
+        onPressed: onBack,
       ),
       title: Row(
         children: [
@@ -57,11 +87,12 @@ Widget addAlerta(
   return child;
 }
 
-Widget btScreenPrincipal({ required String label, required FaIcon icono }) {
+Widget btScreenPrincipal(
+    {required String label, required FaIcon icono, Function()? onPressed}) {
   return SizedBox(
     width: double.infinity,
     child: ElevatedButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         textStyle: const TextStyle(fontSize: 20),

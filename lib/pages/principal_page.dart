@@ -1,5 +1,6 @@
 import 'package:cybernet/helpers/widget_helpers.dart';
 import 'package:cybernet/providers/index.dart';
+import 'package:cybernet/routes/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,6 +30,9 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
                 ? btScreenPrincipal(
                     label: 'PAGAR',
                     icono: const FaIcon(FontAwesomeIcons.cashRegister),
+                    onPressed: () {
+                      ref.read(appRouterProvider).goNamed('pagar');
+                    },
                   )
                 : const SizedBox.shrink(),
             const SizedBox(

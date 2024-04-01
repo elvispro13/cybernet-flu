@@ -17,17 +17,30 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     GoRoute(
       name: 'loading',
       path: '/loading',
-      builder: (BuildContext context, GoRouterState state) {
-        return addAlerta(context, ref, const LoadingPage());
-      },
+      pageBuilder: (BuildContext context, GoRouterState state) =>
+          buildPageWithDefaultTransition<void>(
+              context: context,
+              state: state,
+              child: addAlerta(context, ref, const LoadingPage())),
     ),
     GoRoute(
       name: 'home',
       path: '/',
-      builder: (BuildContext context, GoRouterState state) {
-        return addAlerta(context, ref, const PrincipalPage());
-      },
+      pageBuilder: (BuildContext context, GoRouterState state) =>
+          buildPageWithDefaultTransition<void>(
+              context: context,
+              state: state,
+              child: addAlerta(context, ref, const PrincipalPage())),
       routes: [
+        GoRoute(
+          name: 'pagar',
+          path: 'pagar',
+          pageBuilder: (BuildContext context, GoRouterState state) =>
+              buildPageWithDefaultTransition<void>(
+                  context: context,
+                  state: state,
+                  child: addAlerta(context, ref, const PagarPage())),
+        ),
         GoRoute(
           name: 'print',
           path: 'imprimir',
@@ -39,3 +52,25 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     ),
   ]);
 });
+
+CustomTransitionPage buildPageWithDefaultTransition<T>({
+  required BuildContext context,
+  required GoRouterState state,
+  required Widget child,
+}) {
+  return CustomTransitionPage<T>(
+    key: state.pageKey,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      final tween = Tween(begin: begin, end: end);
+      final offsetAnimation = animation.drive(tween);
+
+      return SlideTransition(
+        position: offsetAnimation,
+        child: child,
+      );
+    },
+  );
+}
