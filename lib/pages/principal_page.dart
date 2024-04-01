@@ -1,5 +1,7 @@
 import 'package:cybernet/helpers/widget_helpers.dart';
+import 'package:cybernet/providers/index.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -13,6 +15,7 @@ class PrincipalPage extends ConsumerStatefulWidget {
 class PrincipalPageState extends ConsumerState<PrincipalPage> {
   @override
   Widget build(BuildContext context) {
+    final login = ref.watch(loginProvider);
     return appPrincipal(
       titulo: 'Bienvenido a Cybernet',
       child: Center(
@@ -22,47 +25,21 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
             const SizedBox(
               height: 15,
             ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  textStyle: const TextStyle(fontSize: 20),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100.0)),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    FaIcon(FontAwesomeIcons.cashRegister),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text('PAGAR'),
-                  ],
-                ),
-              ),
-            ),
+            (login.can('ver-saldo'))
+                ? btScreenPrincipal(
+                    label: 'PAGAR',
+                    icono: const FaIcon(FontAwesomeIcons.cashRegister),
+                  )
+                : const SizedBox.shrink(),
             const SizedBox(
               height: 15,
             ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {},
-                icon: const FaIcon(FontAwesomeIcons.receipt),
-                label: const Text('FACTURAS'),
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  textStyle: const TextStyle(fontSize: 20),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100.0)),
-                ),
-              ),
-            ),
+            (login.can('ver-factura'))
+                ? btScreenPrincipal(
+                    label: 'FACTURAS',
+                    icono: const FaIcon(FontAwesomeIcons.receipt),
+                  )
+                : const SizedBox.shrink(),
           ],
         ),
       ),

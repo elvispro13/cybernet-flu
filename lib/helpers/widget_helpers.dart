@@ -2,6 +2,7 @@ import 'package:cybernet/helpers/utilidades.dart';
 import 'package:cybernet/providers/global_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -45,7 +46,8 @@ Widget appPrincipal({required Widget child, required String titulo}) {
   );
 }
 
-Widget addAlerta(BuildContext context, ProviderRef<GoRouter> ref, Widget child) {
+Widget addAlerta(
+    BuildContext context, ProviderRef<GoRouter> ref, Widget child) {
   ref.listen(alertaProvider, (previous, next) {
     if (next.isNotEmpty) {
       mostrarAlerta(context, 'Aviso', next);
@@ -53,4 +55,28 @@ Widget addAlerta(BuildContext context, ProviderRef<GoRouter> ref, Widget child) 
     }
   });
   return child;
+}
+
+Widget btScreenPrincipal({ required String label, required FaIcon icono }) {
+  return SizedBox(
+    width: double.infinity,
+    child: ElevatedButton(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        textStyle: const TextStyle(fontSize: 20),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          icono,
+          Expanded(
+            child: Center(child: Text(label)),
+          ),
+        ],
+      ),
+    ),
+  );
 }

@@ -1,4 +1,3 @@
-import 'package:cybernet/helpers/size_config.dart';
 import 'package:cybernet/providers/global_provider.dart';
 import 'package:cybernet/providers/login_provider.dart';
 import 'package:cybernet/routes/router.dart';
@@ -12,7 +11,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(

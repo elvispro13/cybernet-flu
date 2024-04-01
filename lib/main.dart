@@ -1,3 +1,4 @@
+import 'package:cybernet/helpers/size_config.dart';
 import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     SystemChrome.setPreferredOrientations(ref.watch(orientacionProvider));
     final router = ref.watch(appRouterProvider);
-
+    SizeConfig().init(context);
     return MaterialApp.router(
       title: 'Cybernet',
       theme: ThemeData(
