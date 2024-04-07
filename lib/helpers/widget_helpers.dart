@@ -5,7 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
-Widget appPrincipal({required Widget child, required String titulo}) {
+Widget appPrincipal(
+    {required Widget child,
+    required String titulo,
+    Widget bottomSheet = const SizedBox()}) {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   return Scaffold(
     key: scaffoldKey,
@@ -42,10 +45,16 @@ Widget appPrincipal({required Widget child, required String titulo}) {
         child: child,
       ),
     ),
+    bottomSheet: bottomSheet,
   );
 }
 
-Widget appPrincipalSinSlide({required Widget child, required String titulo, required Function()? onBack}) {
+Widget appPrincipalSinSlide({
+  required Widget child,
+  required String titulo,
+  required Function()? onBack,
+  List<Widget> footer = const [],
+}) {
   return Scaffold(
     appBar: AppBar(
       backgroundColor: Colors.blue,
@@ -68,11 +77,9 @@ Widget appPrincipalSinSlide({required Widget child, required String titulo, requ
       ),
     ),
     body: SafeArea(
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: child,
-      ),
+      child: child,
     ),
+    persistentFooterButtons: footer,
   );
 }
 

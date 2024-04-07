@@ -7,9 +7,9 @@ import 'package:cybernet/models_api/saldo_view_model.dart';
 import 'package:http/http.dart' as http;
 
 class SaldosService {
-  static Future<RespuestaModel> getSaldosPendientes(Login login) async {
+  static Future<RespuestaModel> getSaldosPendientes(Login login, String buscar) async {
     final res = RespuestaModel();
-    final url = Uri.parse('${Environment.apiUrl}/saldos-pendientes');
+    final url = Uri.parse('${Environment.apiUrl}/saldos-pendientes?search=$buscar');
     try {
       final response = await http.get(url, headers: {
         'Content-Type': 'application/json',
