@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cybernet/helpers/utilidades.dart';
+
 SaldoView saldoViewFromJson(String str) => SaldoView.fromJson(json.decode(str));
 
 String saldoViewToJson(SaldoView data) => json.encode(data.toJson());
@@ -15,7 +17,7 @@ class SaldoView {
   DateTime fechaCreacion;
   DateTime fechaModificacion;
   int cantidadSaldos;
-  int total;
+  double total;
 
   SaldoView({
     required this.id,
@@ -42,7 +44,11 @@ class SaldoView {
         fechaCreacion: DateTime.parse(json["FechaCreacion"]),
         fechaModificacion: DateTime.parse(json["FechaModificacion"]),
         cantidadSaldos: json["CantidadSaldos"],
-        total: json["Total"],
+        total: json["Total"] is int
+            ? json["Total"].toDouble()
+            : json["Total"] is double
+                ? json["Total"]
+                : 0.0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -58,4 +64,9 @@ class SaldoView {
         "CantidadSaldos": cantidadSaldos,
         "Total": total,
       };
+
+  // Funciones
+  String totalFormateado() {
+    return formatoMoneda(numero: total);
+  }
 }

@@ -27,3 +27,8 @@ Future<void> mostrarAlerta(
     },
   );
 }
+
+// Funcion para formatear un numero a moneda
+String formatoMoneda({required double numero, String simbolo = 'L'}) {
+  return '$simbolo.${numero.toStringAsFixed(2)}';
+}

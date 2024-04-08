@@ -1,6 +1,7 @@
-import 'package:cybernet/helpers/widget_helpers.dart';
+import 'package:cybernet/models_api/saldo_view_model.dart';
 import 'package:cybernet/pages/impresora_page.dart';
 import 'package:cybernet/pages/index.dart';
+import 'package:cybernet/pages/pagar/realizar_pago_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +12,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       name: 'login',
       path: '/login',
       builder: (BuildContext context, GoRouterState state) {
-        return addAlerta(context, ref, const LoginPage());
+        return const LoginPage();
       },
     ),
     GoRoute(
@@ -19,27 +20,38 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       path: '/loading',
       pageBuilder: (BuildContext context, GoRouterState state) =>
           buildPageWithDefaultTransition<void>(
-              context: context,
-              state: state,
-              child: addAlerta(context, ref, const LoadingPage())),
+              context: context, state: state, child: const LoadingPage()),
     ),
     GoRoute(
       name: 'home',
       path: '/',
       pageBuilder: (BuildContext context, GoRouterState state) =>
           buildPageWithDefaultTransition<void>(
-              context: context,
-              state: state,
-              child: addAlerta(context, ref, const PrincipalPage())),
+              context: context, state: state, child: const PrincipalPage()),
       routes: [
         GoRoute(
           name: 'pagar',
           path: 'pagar',
           pageBuilder: (BuildContext context, GoRouterState state) =>
               buildPageWithDefaultTransition<void>(
+            context: context,
+            state: state,
+            child: const PagarPage(),
+          ),
+          routes: [
+            GoRoute(
+              name: 'realizar_pago',
+              path: 'realizar_pago',
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                final saldo = state.extra as SaldoView;
+                return buildPageWithDefaultTransition<void>(
                   context: context,
                   state: state,
-                  child: addAlerta(context, ref, const PagarPage())),
+                  child: RealizarPagoPage(saldo: saldo),
+                );
+              },
+            ),
+          ],
         ),
         GoRoute(
           name: 'print',

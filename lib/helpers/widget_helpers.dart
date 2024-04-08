@@ -1,9 +1,6 @@
-import 'package:cybernet/helpers/utilidades.dart';
-import 'package:cybernet/providers/global_provider.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 
 Widget appPrincipal(
     {required Widget child,
@@ -53,7 +50,7 @@ Widget appPrincipalSinSlide({
   required Widget child,
   required String titulo,
   required Function()? onBack,
-  List<Widget> footer = const [],
+  Widget footer = const SizedBox(),
 }) {
   return Scaffold(
     appBar: AppBar(
@@ -77,21 +74,17 @@ Widget appPrincipalSinSlide({
       ),
     ),
     body: SafeArea(
-      child: child,
+      child: Column(
+        children: [
+          Expanded(
+            child: child,
+          ),
+          footer,
+        ],
+      ),
     ),
-    persistentFooterButtons: footer,
+    // persistentFooterButtons: footer,
   );
-}
-
-Widget addAlerta(
-    BuildContext context, ProviderRef<GoRouter> ref, Widget child) {
-  ref.listen(alertaProvider, (previous, next) {
-    if (next.isNotEmpty) {
-      mostrarAlerta(context, 'Aviso', next);
-      ref.read(alertaProvider.notifier).state = '';
-    }
-  });
-  return child;
 }
 
 Widget btScreenPrincipal(

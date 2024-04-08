@@ -1,4 +1,4 @@
-import 'package:cybernet/providers/global_provider.dart';
+import 'package:cybernet/helpers/utilidades.dart';
 import 'package:cybernet/providers/login_provider.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:cybernet/services/login_service.dart';
@@ -121,7 +121,7 @@ class FormularioState extends ConsumerState<_Formulario> {
 
     setState(() => cargando = false);
     if (!res.success) {
-      ref.read(alertaProvider.notifier).state = res.message;
+      if(mounted) mostrarAlerta(context, 'Aviso', res.message);
       return;
     }
 
