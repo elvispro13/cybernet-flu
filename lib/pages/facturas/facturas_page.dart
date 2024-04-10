@@ -1,66 +1,59 @@
 import 'package:cybernet/helpers/size_config.dart';
 import 'package:cybernet/helpers/widget_helpers.dart';
-import 'package:cybernet/models_api/saldo_view_model.dart';
-import 'package:cybernet/providers/index.dart';
+import 'package:cybernet/models_api/factura_model.dart';
+import 'package:cybernet/providers/factura_provider.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class PagarPage extends ConsumerStatefulWidget {
-  const PagarPage({super.key});
+class FacturasPage extends ConsumerStatefulWidget {
+  const FacturasPage({super.key});
 
   @override
-  createState() => PagarPageState();
+  createState() => _FacturasPageState();
 }
 
-class PagarPageState extends ConsumerState<PagarPage> {
+class _FacturasPageState extends ConsumerState<FacturasPage> {
   final buscarController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final saldos = ref.watch(saldosPendientesProvider);
-    buscarController.text = ref.watch(saldosPBuscarProvider);
+    final facturas = ref.watch(facturasProvider);
+    buscarController.text = ref.watch(facturasBuscarProvider);
     return appPrincipalSinSlide(
-      titulo: 'Pagos Pendientes',
+      titulo: 'Facturas',
       onBack: () => _back(),
       child: PopScope(
-        canPop: false,
-        onPopInvoked: (e) => _back(),
-        child: RefreshIndicator(
-          onRefresh: () async => _recargar(),
-          child: saldos.when(
-            data: (data) {
-              if (data.isEmpty) {
-                return const Center(
-                  child: Text('No hay saldos que mostrar'),
-                );
-              }
-              return ListView.builder(
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      ref.read(idClienteSaldosProvider.notifier).state = data[index].id;
-                      ref.read(appRouterProvider).goNamed(
-                            'pagar.realizar_pago',
-                            extra: data[index],
-                          );
-                    },
-                    child: _item(data[index]),
+          canPop: false,
+          onPopInvoked: (e) => _back(),
+          child: RefreshIndicator(
+            onRefresh: () async => _recargar(),
+            child: facturas.when(
+              data: (data) {
+                if (data.isEmpty) {
+                  return const Center(
+                    child: Text('No hay facturas que mostrar'),
                   );
-                },
-              );
-            },
-            loading: () => const Expanded(
-              child: Center(
-                child: CircularProgressIndicator(),
+                }
+                return ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {},
+                      child: _item(data[index]),
+                    );
+                  },
+                );
+              },
+              loading: () => const Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
+              error: (error, stack) => Text('Error: $error'),
             ),
-            error: (error, stack) => Text('Error: $error'),
-          ),
-        ),
-      ),
+          )),
       footer: Card(
         child: ListTile(
           leading: const Icon(Icons.search),
@@ -69,14 +62,14 @@ class PagarPageState extends ConsumerState<PagarPage> {
                   icon: const Icon(Icons.clear),
                   onPressed: () {
                     buscarController.clear();
-                    ref.read(saldosPBuscarProvider.notifier).state = '';
+                    ref.read(facturasBuscarProvider.notifier).state = '';
                   },
                 )
               : null,
           title: TextFormField(
             controller: buscarController,
             onChanged: (value) {
-              ref.read(saldosPBuscarProvider.notifier).state = value;
+              ref.read(facturasBuscarProvider.notifier).state = value;
             },
             decoration: const InputDecoration(
               labelText: 'Buscar',
@@ -87,7 +80,7 @@ class PagarPageState extends ConsumerState<PagarPage> {
     );
   }
 
-  _item(SaldoView saldo) {
+  _item(Factura factura) {
     return Card(
       elevation: 2,
       child: Row(
@@ -99,7 +92,7 @@ class PagarPageState extends ConsumerState<PagarPage> {
             child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FaIcon(FontAwesomeIcons.moneyBill),
+                FaIcon(FontAwesomeIcons.receipt),
               ],
             ),
           ),
@@ -111,7 +104,7 @@ class PagarPageState extends ConsumerState<PagarPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    saldo.nombre,
+                    factura.numeroFactura,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -121,19 +114,13 @@ class PagarPageState extends ConsumerState<PagarPage> {
                     height: 10,
                   ),
                   Text(
-                    'RTN: ${saldo.rtn}',
+                    'Cliente: ${factura.nombreCliente}',
                   ),
                   const SizedBox(
                     height: 10,
                   ),
                   Text(
-                    'Saldos Pendientes: ${saldo.cantidadSaldos}',
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'Total de Deuda: ${saldo.totalFormateado()}',
+                    'RTN: ${factura.rtn}',
                   ),
                 ],
               ),
@@ -150,7 +137,7 @@ class PagarPageState extends ConsumerState<PagarPage> {
   }
 
   _recargar() {
-    ref.read(saldosPBuscarProvider.notifier).state = '';
-    ref.invalidate(saldosPendientesProvider);
+    ref.read(facturasBuscarProvider.notifier).state = '';
+    ref.invalidate(facturasProvider);
   }
 }

@@ -19,6 +19,8 @@ class RealizarPagoPage extends ConsumerStatefulWidget {
 }
 
 class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
+  String tipoPagoSelected = 'Efectivo';
+
   @override
   Widget build(BuildContext context) {
     final saldos = ref.watch(saldosPendientesPorClienteProvider);
@@ -70,10 +72,8 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
                   },
                 );
               },
-              loading: () => const Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
+              loading: () => const Center(
+                child: CircularProgressIndicator(),
               ),
               error: (error, stack) => Text('Error: $error'),
             ),
@@ -89,22 +89,44 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
             ),
             SizedBox(
               width: SizeConfig.screenWidth! * 0.90,
-              child: DropdownButton(
-                items: const <DropdownMenuItem<String>>[
-                  DropdownMenuItem(
-                    value: 'Efectivo',
-                    child: Text('Efectivo'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Tarjeta',
-                    child: Text('Tarjeta'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Transferencia',
-                    child: Text('Transferencia'),
-                  ),
-                ],
-                onChanged: (value) => {},
+              child: Center(
+                child: DropdownButton(
+                  value: tipoPagoSelected,
+                  items: <DropdownMenuItem<String>>[
+                    DropdownMenuItem(
+                      value: 'Efectivo',
+                      child: Center(
+                        child: SizedBox(
+                          width: SizeConfig.screenWidth! * 0.70,
+                          child: const Text('Efectivo'),
+                        ),
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Tarjeta',
+                      child: Center(
+                        child: SizedBox(
+                          width: SizeConfig.screenWidth! * 0.70,
+                          child: const Text('Tarjeta'),
+                        ),
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Transferencia',
+                      child: Center(
+                        child: SizedBox(
+                          width: SizeConfig.screenWidth! * 0.70,
+                          child: const Text('Transferencia'),
+                        ),
+                      ),
+                    ),
+                  ],
+                  onChanged: (value) => {
+                    setState(() {
+                      tipoPagoSelected = value.toString();
+                    })
+                  },
+                ),
               ),
             ),
           ],

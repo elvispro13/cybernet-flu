@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 Future<void> mostrarAlerta(
     BuildContext context, String titulo, String mensaje) async {
@@ -31,4 +32,26 @@ Future<void> mostrarAlerta(
 // Funcion para formatear un numero a moneda
 String formatoMoneda({required double numero, String simbolo = 'L'}) {
   return '$simbolo.${numero.toStringAsFixed(2)}';
+}
+
+CustomTransitionPage buildPageWithDefaultTransition<T>({
+  required BuildContext context,
+  required GoRouterState state,
+  required Widget child,
+}) {
+  return CustomTransitionPage<T>(
+    key: state.pageKey,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0.0, 1.0);
+      const end = Offset.zero;
+      final tween = Tween(begin: begin, end: end);
+      final offsetAnimation = animation.drive(tween);
+
+      return SlideTransition(
+        position: offsetAnimation,
+        child: child,
+      );
+    },
+  );
 }

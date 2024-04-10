@@ -42,6 +42,9 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
                 ? btScreenPrincipal(
                     label: 'FACTURAS',
                     icono: const FaIcon(FontAwesomeIcons.receipt),
+                    onPressed: () {
+                      ref.read(appRouterProvider).goNamed('facturas');
+                    },
                   )
                 : const SizedBox.shrink(),
           ],
