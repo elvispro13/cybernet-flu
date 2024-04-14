@@ -59,7 +59,7 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
             const SizedBox(
               height: 10,
             ),
-            Text('Atendido por: ${widget.factura.creadoPor}'),
+            Text('Atendido por: ${widget.factura.creadoPorNombre}'),
             const SizedBox(
               height: 10,
             ),
@@ -71,11 +71,11 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
             const SizedBox(
               height: 10,
             ),
-            Text('Fecha de emision: ${widget.factura.fechaEmision}'),
+            Text('Fecha de emision: ${widget.factura.fechaEmisionSinHora()}'),
             const SizedBox(
               height: 10,
             ),
-            Text('Hora de emision: ${widget.factura.fechaEmision}'),
+            Text('Hora de emision: ${widget.factura.horaEmision()}'),
             const SizedBox(
               height: 10,
             ),
@@ -83,55 +83,55 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
             const SizedBox(
               height: 10,
             ),
-            Text('Efectivo entregado: ${widget.factura.efectivoEntregado}'),
+            Text('Efectivo entregado: ${widget.factura.efectivoEntregadoFormateado()}'),
             const SizedBox(
               height: 10,
             ),
-            Text('Cambio de efectivo: ${widget.factura.cambioEfectivo}'),
+            Text('Cambio de efectivo: ${widget.factura.cambioEfectivoFormateado()}'),
             const SizedBox(
               height: 10,
             ),
-            Text('Total: ${widget.factura.total}'),
+            Text('Total: ${widget.factura.subTotalFormateado()}'),
             const SizedBox(
               height: 10,
             ),
-            Text('Exonerado: ${widget.factura.exonerado}'),
+            Text('Exonerado: ${widget.factura.exoneradoFormateado()}'),
             const SizedBox(
               height: 10,
             ),
-            Text('Exento: ${widget.factura.exento}'),
+            Text('Exento: ${widget.factura.exentoFormateado()}'),
             const SizedBox(
               height: 10,
             ),
-            Text('Gravado 15%: ${widget.factura.gravado1}'),
+            Text('Gravado 15%: ${widget.factura.gravado1Formateado()}'),
             const SizedBox(
               height: 10,
             ),
-            Text('Gravado 18%: ${widget.factura.gravado2}'),
+            Text('Gravado 18%: ${widget.factura.gravado2Formateado()}'),
             const SizedBox(
               height: 10,
             ),
-            Text('Descuento: ${widget.factura.descuento}'),
+            Text('Descuento: ${widget.factura.descuentoFormateado()}'),
             const SizedBox(
               height: 10,
             ),
-            Text('ISV 15%: ${widget.factura.isv1}'),
+            Text('ISV 15%: ${widget.factura.isv1Formateado()}'),
             const SizedBox(
               height: 10,
             ),
-            Text('ISV 18%: ${widget.factura.isv2}'),
+            Text('ISV 18%: ${widget.factura.isv2Formateado()}'),
             const SizedBox(
               height: 10,
             ),
-            Text('ISV Total: ${(widget.factura.isv1 + widget.factura.isv2)}'),
+            Text('ISV Total: ${(widget.factura.isvTotalFormateado())}'),
             const SizedBox(
               height: 10,
             ),
-            Text('Creado Por: ${widget.factura.creadoPor}'),
+            Text('Creado Por: ${widget.factura.creadoPorNombre}'),
             const SizedBox(
               height: 10,
             ),
-            Text('Modificado Por: ${widget.factura.modificadoPor}'),
+            Text('Modificado Por: ${widget.factura.modificadoPorNombre}'),
             const SizedBox(
               height: 10,
             ),

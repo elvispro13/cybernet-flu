@@ -33,6 +33,9 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            const SizedBox(
+              height: 20,
+            ),
             Center(
               child: Text(
                 widget.saldo.nombre,

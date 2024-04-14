@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cybernet/helpers/utilidades.dart';
 import 'package:flutter/material.dart';
 
 Factura facturaFromJson(String str) => Factura.fromJson(json.decode(str));
@@ -32,6 +33,8 @@ class Factura {
   int modificadoPor;
   DateTime fechaCreacion;
   DateTime fechaModificacion;
+  String creadoPorNombre;
+  String modificadoPorNombre;
 
   final estados = {
     'N': {'Nombre': 'Normal', 'Color': Colors.green},
@@ -65,6 +68,8 @@ class Factura {
     required this.modificadoPor,
     required this.fechaCreacion,
     required this.fechaModificacion,
+    required this.creadoPorNombre,
+    required this.modificadoPorNombre,
   });
 
   factory Factura.fromJson(Map<String, dynamic> json) => Factura(
@@ -93,6 +98,8 @@ class Factura {
         modificadoPor: json["ModificadoPor"],
         fechaCreacion: DateTime.parse(json["FechaCreacion"]),
         fechaModificacion: DateTime.parse(json["FechaModificacion"]),
+        creadoPorNombre: json["CreadoPorNombre"],
+        modificadoPorNombre: json["ModificadoPorNombre"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -121,9 +128,63 @@ class Factura {
         "ModificadoPor": modificadoPor,
         "FechaCreacion": fechaCreacion.toIso8601String(),
         "FechaModificacion": fechaModificacion.toIso8601String(),
+        "CreadoPorNombre": creadoPorNombre,
+        "ModificadoPorNombre": modificadoPorNombre,
       };
 
   //Funciones
+  String cambioEfectivoFormateado() {
+    return formatoMoneda(numero: cambioEfectivo);
+  }
+
+  String efectivoEntregadoFormateado() {
+    return formatoMoneda(numero: efectivoEntregado);
+  }
+
+  String isv1Formateado() {
+    return formatoMoneda(numero: isv1);
+  }
+
+  String isv2Formateado() {
+    return formatoMoneda(numero: isv2);
+  }
+
+  String isvTotalFormateado() {
+    return formatoMoneda(numero: isv1 + isv2);
+  }
+
+  String exoneradoFormateado() {
+    return formatoMoneda(numero: exonerado);
+  }
+
+  String exentoFormateado() {
+    return formatoMoneda(numero: exento);
+  }
+
+  String gravado1Formateado() {
+    return formatoMoneda(numero: gravado1);
+  }
+
+  String gravado2Formateado() {
+    return formatoMoneda(numero: gravado2);
+  }
+
+  String descuentoFormateado() {
+    return formatoMoneda(numero: descuento);
+  }
+
+  String subTotalFormateado() {
+    return formatoMoneda(numero: subTotal);
+  }
+
+  String fechaEmisionSinHora() {
+    return '${fechaEmision.day}/${fechaEmision.month}/${fechaEmision.year}';
+  }
+
+  String horaEmision() {
+    return '${fechaEmision.hour}:${fechaEmision.minute}';
+  }
+
   String estadoDet() {
     return estados[estado]?['Nombre'] as String;
   }
