@@ -10,4 +10,4 @@ final impresoraConectadaProvider = StateProvider<bool>((ref) => false);
 
 final impresoraDeviceProvider = StateProvider<BluetoothDevice?>((ref) => null);
 
-final mensajeImpresora = StateProvider<String>((ref) => 'Impresora no conectada');
+final mensajeImpresora = StateProvider<String>((ref) => 'No conectada');

@@ -3,7 +3,6 @@ import 'package:cybernet/helpers/widget_helpers.dart';
 import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -15,6 +14,7 @@ class PrincipalPage extends ConsumerStatefulWidget {
 }
 
 class PrincipalPageState extends ConsumerState<PrincipalPage> {
+
   @override
   void initState() {
     super.initState();
@@ -35,11 +35,11 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
       switch (state) {
         case BluetoothPrint.CONNECTED:
           ref.read(impresoraConectadaProvider.notifier).state = true;
-          ref.read(mensajeImpresora.notifier).state = 'Impresora conectada';
+          ref.read(mensajeImpresora.notifier).state = 'Conectada';
           break;
         case BluetoothPrint.DISCONNECTED:
           ref.read(impresoraConectadaProvider.notifier).state = false;
-          ref.read(mensajeImpresora.notifier).state = 'Impresora no conectada';
+          ref.read(mensajeImpresora.notifier).state = 'No conectada';
           break;
         default:
           break;
@@ -86,6 +86,15 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
                     },
                   )
                 : const SizedBox.shrink(),
+            const SizedBox(
+              height: 15,
+            ),
+            ElevatedButton(
+              child: const Text('Impresora'),
+              onPressed: () {
+                showCustomDialog(context);
+              },
+            )
           ],
         ),
       ),
