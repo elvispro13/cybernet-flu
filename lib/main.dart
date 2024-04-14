@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cybernet/helpers/size_config.dart';
 import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
@@ -6,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  HttpOverrides.global = MyHttpOverrides();
   runApp(
     const ProviderScope(
       child: MyApp(),
@@ -29,5 +33,14 @@ class MyApp extends ConsumerWidget {
       routerConfig: router,
       debugShowCheckedModeBanner: false,
     );
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

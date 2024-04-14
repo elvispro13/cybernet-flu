@@ -19,6 +19,7 @@ class LoginService {
     try {
       final response = await http.post(url, body: jsonEncode(data), headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       }).timeout(const Duration(seconds: 20));
 
       if (response.statusCode == 200) {

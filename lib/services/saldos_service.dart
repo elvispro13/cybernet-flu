@@ -9,13 +9,15 @@ import 'package:http/http.dart' as http;
 
 class SaldosService {
   static Future<RespuestaModel> getSaldosPendientes(
-      Login login, String buscar) async {
+    Login login,
+    String buscar,
+  ) async {
     final res = RespuestaModel();
     final url =
         Uri.parse('${Environment.apiUrl}/saldos-pendientes?search=$buscar');
     try {
       final response = await http.get(url, headers: {
-        'Content-Type': 'application/json',
+        'Accept': 'application/json',
         'Authorization': 'Bearer ${login.accessToken}',
       }).timeout(const Duration(seconds: 20));
 
@@ -34,12 +36,14 @@ class SaldosService {
   }
 
   static Future<RespuestaModel> getSaldosPendientesPorCliente(
-      Login login, int idCliente) async {
+    Login login,
+    int idCliente,
+  ) async {
     final res = RespuestaModel();
     final url = Uri.parse('${Environment.apiUrl}/saldos-pendientes/$idCliente');
     try {
       final response = await http.get(url, headers: {
-        'Content-Type': 'application/json',
+        'Accept': 'application/json',
         'Authorization': 'Bearer ${login.accessToken}',
       }).timeout(const Duration(seconds: 20));
 

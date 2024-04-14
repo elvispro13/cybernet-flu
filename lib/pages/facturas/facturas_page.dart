@@ -32,15 +32,27 @@ class _FacturasPageState extends ConsumerState<FacturasPage> {
             child: facturas.when(
               data: (data) {
                 if (data.isEmpty) {
-                  return const Center(
-                    child: Text('No hay facturas que mostrar'),
+                  return ListView(
+                    children: const [
+                      ListTile(
+                        title: Center(
+                          child: Text('No hay facturas'),
+                        ),
+                      ),
+                    ],
                   );
                 }
                 return ListView.builder(
                   itemCount: data.length,
                   itemBuilder: (context, index) {
                     return InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        ref.read(idFacturaProvider.notifier).state = data[index].id;
+                        ref.read(appRouterProvider).goNamed(
+                              'facturas.ver_factura',
+                              extra: data[index],
+                            );
+                      },
                       child: _item(data[index]),
                     );
                   },

@@ -55,7 +55,7 @@ class FormularioState extends ConsumerState<_Formulario> {
         key: formKey,
         child: Column(
           children: [
-            formItemsDesign(
+            _formItemsDesign(
               Icons.person,
               TextFormField(
                 controller: usuarioCtrl,
@@ -67,7 +67,7 @@ class FormularioState extends ConsumerState<_Formulario> {
                 textInputAction: TextInputAction.next,
               ),
             ),
-            formItemsDesign(
+            _formItemsDesign(
               Icons.lock,
               TextFormField(
                   obscureText: true,
@@ -121,7 +121,7 @@ class FormularioState extends ConsumerState<_Formulario> {
 
     setState(() => cargando = false);
     if (!res.success) {
-      if(mounted) mostrarAlerta(context, 'Aviso', res.message);
+      if (mounted) mostrarAlerta(context, 'Aviso', res.message);
       return;
     }
 
@@ -129,13 +129,13 @@ class FormularioState extends ConsumerState<_Formulario> {
 
     ref.read(appRouterProvider).goNamed('loading');
   }
-}
 
-formItemsDesign(icon, item) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10),
-    child: Card(child: ListTile(leading: Icon(icon), title: item)),
-  );
+  _formItemsDesign(icon, item) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Card(child: ListTile(leading: Icon(icon), title: item)),
+    );
+  }
 }
 
 // final u = Usuario();

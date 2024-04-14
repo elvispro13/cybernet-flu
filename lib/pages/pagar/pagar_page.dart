@@ -32,8 +32,14 @@ class PagarPageState extends ConsumerState<PagarPage> {
           child: saldos.when(
             data: (data) {
               if (data.isEmpty) {
-                return const Center(
-                  child: Text('No hay saldos que mostrar'),
+                return ListView(
+                  children: const [
+                    ListTile(
+                      title: Center(
+                        child: Text('No hay saldos pendientes'),
+                      ),
+                    ),
+                  ],
                 );
               }
               return ListView.builder(
@@ -41,7 +47,8 @@ class PagarPageState extends ConsumerState<PagarPage> {
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () {
-                      ref.read(idClienteSaldosProvider.notifier).state = data[index].id;
+                      ref.read(idClienteSaldosProvider.notifier).state =
+                          data[index].id;
                       ref.read(appRouterProvider).goNamed(
                             'pagar.realizar_pago',
                             extra: data[index],

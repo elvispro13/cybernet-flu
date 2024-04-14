@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+
 Factura facturaFromJson(String str) => Factura.fromJson(json.decode(str));
 
 String facturaToJson(Factura data) => json.encode(data.toJson());
@@ -30,6 +32,12 @@ class Factura {
   int modificadoPor;
   DateTime fechaCreacion;
   DateTime fechaModificacion;
+
+  final estados = {
+    'N': {'Nombre': 'Normal', 'Color': Colors.green},
+    'A': {'Nombre': 'Anulado', 'Color': Colors.red},
+    'M': {'Nombre': 'Moroso', 'Color': Colors.orange},
+  };
 
   Factura({
     required this.id,
@@ -114,4 +122,13 @@ class Factura {
         "FechaCreacion": fechaCreacion.toIso8601String(),
         "FechaModificacion": fechaModificacion.toIso8601String(),
       };
+
+  //Funciones
+  String estadoDet() {
+    return estados[estado]?['Nombre'] as String;
+  }
+
+  Color estadoColor() {
+    return estados[estado]?['Color'] as Color;
+  }
 }
