@@ -1,7 +1,13 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:cybernet/helpers/utilidades.dart';
+import 'package:cybernet/models_api/facturadet_model.dart';
+import 'package:cybernet/models_api/login_model.dart';
+import 'package:cybernet/services/facturas_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 Factura facturaFromJson(String str) => Factura.fromJson(json.decode(str));
 
@@ -35,6 +41,7 @@ class Factura {
   DateTime fechaModificacion;
   String creadoPorNombre;
   String modificadoPorNombre;
+  List<FacturaDet> detalles = [];
 
   final estados = {
     'N': {'Nombre': 'Normal', 'Color': Colors.green},
@@ -131,6 +138,40 @@ class Factura {
         "CreadoPorNombre": creadoPorNombre,
         "ModificadoPorNombre": modificadoPorNombre,
       };
+
+  Future<void> obtenerDetalles(Login login) async {
+    final res = await FacturasService.getFacturaDetalles(login, id);
+    if (res.success) {
+      detalles = res.data as List<FacturaDet>;
+    }
+  }
+
+  Future<List<LineText>> getImprecion() async {
+    List<LineText> list = [];
+
+    ByteData data = await rootBundle.load("assets/logo_print.png");
+    List<int> imageBytes =
+        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    String base64Image = base64Encode(imageBytes);
+    list.add(LineText(
+        type: LineText.TYPE_IMAGE,
+        content: base64Image,
+        align: LineText.ALIGN_CENTER,
+        linefeed: 1,
+        width: 200));
+
+    list.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: '================================',
+        linefeed: 1));
+    list.add(LineText(
+        type: LineText.TYPE_TEXT, content: 'RTN:01021995000303', linefeed: 1));
+    list.add(LineText(
+        type: LineText.TYPE_TEXT, content: 'TEL:98602174', linefeed: 1));
+    list.add(LineText(linefeed: 1));
+
+    return list;
+  }
 
   //Funciones
   String cambioEfectivoFormateado() {

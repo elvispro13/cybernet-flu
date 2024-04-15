@@ -1,8 +1,10 @@
+import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:cybernet/helpers/size_config.dart';
 import 'package:cybernet/helpers/widget_helpers.dart';
 import 'package:cybernet/models_api/factura_model.dart';
 import 'package:cybernet/models_api/facturadet_model.dart';
 import 'package:cybernet/providers/factura_provider.dart';
+import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -83,11 +85,13 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
             const SizedBox(
               height: 10,
             ),
-            Text('Efectivo entregado: ${widget.factura.efectivoEntregadoFormateado()}'),
+            Text(
+                'Efectivo entregado: ${widget.factura.efectivoEntregadoFormateado()}'),
             const SizedBox(
               height: 10,
             ),
-            Text('Cambio de efectivo: ${widget.factura.cambioEfectivoFormateado()}'),
+            Text(
+                'Cambio de efectivo: ${widget.factura.cambioEfectivoFormateado()}'),
             const SizedBox(
               height: 10,
             ),
@@ -161,6 +165,36 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
             ),
           ],
         ),
+      ),
+      footer: Column(
+        children: [
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            child: ElevatedButton(
+              onPressed: () async {
+                await widget.factura.obtenerDetalles(ref.read(loginProvider));
+                List<LineText> list = await widget.factura.getImprecion();
+                ref.read(bluetoothPrintProvider).printReceipt({}, list);
+              },
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FaIcon(FontAwesomeIcons.print),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('Imprimir Factura'),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+        ],
       ),
     );
   }

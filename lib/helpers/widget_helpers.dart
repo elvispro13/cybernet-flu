@@ -199,38 +199,7 @@ class _ImpresoraConexionState extends ConsumerState<ImpresoraConexion> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Material(
-                      child: StreamBuilder<List<BluetoothDevice>>(
-                        stream: ref.read(bluetoothPrintProvider).scanResults,
-                        initialData: const [],
-                        builder: (c, snapshot) => Column(
-                          children: snapshot.data!.map((d) {
-                            return ListTile(
-                              title: Text(d.name ?? ''),
-                              subtitle: Text(d.address ?? ''),
-                              onTap: () async {
-                                setState(() {
-                                  ref
-                                      .read(impresoraDeviceProvider.notifier)
-                                      .state = d;
-                                });
-                              },
-                              trailing: ref.read(impresoraDeviceProvider) !=
-                                          null &&
-                                      ref
-                                              .read(impresoraDeviceProvider)!
-                                              .address ==
-                                          d.address
-                                  ? const Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                    )
-                                  : null,
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),
+                    _listaDispositivos(),
                     const SizedBox(
                       height: 20,
                     ),
@@ -238,77 +207,7 @@ class _ImpresoraConexionState extends ConsumerState<ImpresoraConexion> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        OutlinedButton(
-                          onPressed: !ref.read(impresoraConectadaProvider)
-                              ? () async {
-                                  if (ref.read(impresoraDeviceProvider) !=
-                                          null &&
-                                      ref
-                                              .read(impresoraDeviceProvider)!
-                                              .address !=
-                                          null) {
-                                    setState(() {
-                                      ref
-                                          .read(mensajeImpresora.notifier)
-                                          .state = 'Conectando...';
-                                    });
-                                    await ref
-                                        .read(bluetoothPrintProvider)
-                                        .connect(
-                                            ref.read(impresoraDeviceProvider)!);
-                                  } else {
-                                    setState(() {
-                                      ref
-                                          .read(mensajeImpresora.notifier)
-                                          .state = 'No conectada';
-                                    });
-                                  }
-                                }
-                              : null,
-                          child: const Text('Conectar'),
-                        ),
-                        const SizedBox(width: 10.0),
-                        OutlinedButton(
-                          onPressed: ref.read(impresoraConectadaProvider)
-                              ? () async {
-                                  setState(() {
-                                    ref.read(mensajeImpresora.notifier).state =
-                                        'Desconectando...';
-                                  });
-                                  await ref
-                                      .read(bluetoothPrintProvider)
-                                      .disconnect();
-                                }
-                              : null,
-                          child: const Text('Desconectar'),
-                        ),
-                      ],
-                    ),
-                    StreamBuilder<bool>(
-                      stream: ref.read(bluetoothPrintProvider).isScanning,
-                      initialData: false,
-                      builder: (c, snapshot) {
-                        if (snapshot.data == true) {
-                          return OutlinedButton(
-                            onPressed: () async {
-                              await ref.read(bluetoothPrintProvider).stopScan();
-                            },
-                            child: const Text('Buscando...'),
-                          );
-                        } else {
-                          return OutlinedButton(
-                            onPressed: () async {
-                              await ref.read(bluetoothPrintProvider).startScan(
-                                  timeout: const Duration(seconds: 4));
-                            },
-                            child: const Text('Buscar impresora'),
-                          );
-                        }
-                      },
-                    ),
+                    _botonesConexion(),
                   ],
                 ),
               ),
@@ -322,6 +221,105 @@ class _ImpresoraConexionState extends ConsumerState<ImpresoraConexion> {
           ],
         ),
       ),
+    );
+  }
+
+  _listaDispositivos() {
+    return Material(
+      child: StreamBuilder<List<BluetoothDevice>>(
+        stream: ref.read(bluetoothPrintProvider).scanResults,
+        initialData: const [],
+        builder: (c, snapshot) => Column(
+          children: snapshot.data!.map((d) {
+            return ListTile(
+              title: Text(d.name ?? ''),
+              subtitle: Text(d.address ?? ''),
+              onTap: () async {
+                setState(() {
+                  ref.read(impresoraDeviceProvider.notifier).state = d;
+                });
+              },
+              trailing: ref.read(impresoraDeviceProvider) != null &&
+                      ref.read(impresoraDeviceProvider)!.address == d.address
+                  ? const Icon(
+                      Icons.check,
+                      color: Colors.green,
+                    )
+                  : null,
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  _botonesConexion() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            OutlinedButton(
+              onPressed: !ref.read(impresoraConectadaProvider)
+                  ? () async {
+                      if (ref.read(impresoraDeviceProvider) != null &&
+                          ref.read(impresoraDeviceProvider)!.address != null) {
+                        setState(() {
+                          ref.read(mensajeImpresora.notifier).state =
+                              'Conectando...';
+                        });
+                        await ref
+                            .read(bluetoothPrintProvider)
+                            .connect(ref.read(impresoraDeviceProvider)!);
+                      } else {
+                        setState(() {
+                          ref.read(mensajeImpresora.notifier).state =
+                              'No conectada';
+                        });
+                      }
+                    }
+                  : null,
+              child: const Text('Conectar'),
+            ),
+            const SizedBox(width: 10.0),
+            OutlinedButton(
+              onPressed: ref.read(impresoraConectadaProvider)
+                  ? () async {
+                      setState(() {
+                        ref.read(mensajeImpresora.notifier).state =
+                            'Desconectando...';
+                      });
+                      await ref.read(bluetoothPrintProvider).disconnect();
+                    }
+                  : null,
+              child: const Text('Desconectar'),
+            ),
+          ],
+        ),
+        StreamBuilder<bool>(
+          stream: ref.read(bluetoothPrintProvider).isScanning,
+          initialData: false,
+          builder: (c, snapshot) {
+            if (snapshot.data == true) {
+              return OutlinedButton(
+                onPressed: () async {
+                  await ref.read(bluetoothPrintProvider).stopScan();
+                },
+                child: const Text('Buscando...'),
+              );
+            } else {
+              return OutlinedButton(
+                onPressed: () async {
+                  await ref
+                      .read(bluetoothPrintProvider)
+                      .startScan(timeout: const Duration(seconds: 4));
+                },
+                child: const Text('Buscar impresora'),
+              );
+            }
+          },
+        ),
+      ],
     );
   }
 }
