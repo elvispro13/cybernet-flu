@@ -1,9 +1,9 @@
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:cybernet/providers/global_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Widget appPrincipal(
     {required Widget child,
@@ -115,7 +115,7 @@ Widget btScreenPrincipal(
   );
 }
 
-void showCustomDialog(BuildContext context) {
+void modalImpresora(BuildContext context) {
   showGeneralDialog(
     context: context,
     barrierLabel: "Barrier",
@@ -157,7 +157,7 @@ class _ImpresoraConexionState extends ConsumerState<ImpresoraConexion> {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(40),
@@ -216,7 +216,7 @@ class _ImpresoraConexionState extends ConsumerState<ImpresoraConexion> {
               onPressed: () async {
                 Navigator.pop(context);
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cerrar'),
             ),
           ],
         ),
@@ -271,6 +271,8 @@ class _ImpresoraConexionState extends ConsumerState<ImpresoraConexion> {
                         await ref
                             .read(bluetoothPrintProvider)
                             .connect(ref.read(impresoraDeviceProvider)!);
+                        final SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setString('impresora', ref.read(impresoraDeviceProvider)!.address!);
                       } else {
                         setState(() {
                           ref.read(mensajeImpresora.notifier).state =

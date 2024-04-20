@@ -1,4 +1,5 @@
 import 'package:bluetooth_print/bluetooth_print.dart';
+import 'package:cybernet/helpers/utilidades.dart';
 import 'package:cybernet/helpers/widget_helpers.dart';
 import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
@@ -14,7 +15,6 @@ class PrincipalPage extends ConsumerStatefulWidget {
 }
 
 class PrincipalPageState extends ConsumerState<PrincipalPage> {
-
   @override
   void initState() {
     super.initState();
@@ -22,16 +22,17 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
   }
 
   Future<void> initBluetooth() async {
-    ref
+    print('504: Inicio escaneo');
+    await ref
         .read(bluetoothPrintProvider)
         .startScan(timeout: const Duration(seconds: 4));
 
-    bool isConnected =
-        await ref.read(bluetoothPrintProvider).isConnected ?? false;
+    print('504: Fin escaneo');
+
+    // bool isConnected =
+    //     await ref.read(bluetoothPrintProvider).isConnected ?? false;
 
     ref.read(bluetoothPrintProvider).state.listen((state) {
-      print('******************* cur device status: $state');
-
       switch (state) {
         case BluetoothPrint.CONNECTED:
           ref.read(impresoraConectadaProvider.notifier).state = true;
@@ -46,11 +47,7 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
       }
     });
 
-    if (!mounted) return;
-
-    if (isConnected) {
-      ref.read(impresoraConectadaProvider.notifier).state = true;
-    }
+    print('504: Fin initBluetooth');
   }
 
   @override
@@ -92,7 +89,13 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
             ElevatedButton(
               child: const Text('Impresora'),
               onPressed: () {
-                showCustomDialog(context);
+                modalImpresora(context);
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Conectar'),
+              onPressed: () async {
+                await conectarImpresora(ref: ref);
               },
             )
           ],

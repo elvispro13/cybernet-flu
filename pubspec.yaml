@@ -25,6 +25,7 @@ dependencies:
   bluetooth_print: ^4.3.0
   local_auth: ^2.2.0
   shared_preferences: ^2.2.2
+  diacritic: ^0.1.5
 
 dev_dependencies:
   flutter_test:

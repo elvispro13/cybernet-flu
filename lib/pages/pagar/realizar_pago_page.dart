@@ -83,7 +83,7 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
             ElevatedButton(
               child: const Text('Impresora'),
               onPressed: () {
-                showCustomDialog(context);
+                modalImpresora(context);
               },
             ),
           ],

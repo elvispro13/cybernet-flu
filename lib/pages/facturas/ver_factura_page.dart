@@ -23,6 +23,7 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
   @override
   Widget build(BuildContext context) {
     final detalles = ref.watch(facturaDetallesProvider);
+    final impresoraConectada = ref.watch(impresoraConectadaProvider);
     return appPrincipalSinSlide(
       titulo: 'Viendo Factura',
       onBack: () => ref.read(appRouterProvider).pop(),
@@ -175,8 +176,14 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
             margin: const EdgeInsets.symmetric(horizontal: 20),
             child: ElevatedButton(
               onPressed: () async {
+                if(!impresoraConectada) {
+                  modalImpresora(context);
+                  return;
+                }
                 await widget.factura.obtenerDetalles(ref.read(loginProvider));
-                List<LineText> list = await widget.factura.getImprecion();
+                List<LineText> list = await widget.factura.getImprecion(
+                    ref.read(loginProvider).variables!,
+                    ref.read(loginProvider).rango!);
                 ref.read(bluetoothPrintProvider).printReceipt({}, list);
               },
               child: const Row(

@@ -7,5 +7,7 @@ final loginProvider = StateProvider<Login>((ref) {
     tokenType: '',
     usuario: '',
     permisos: [],
+    variables: null,
+    rango: null,
   );
 });
