@@ -1,3 +1,4 @@
+import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:cybernet/providers/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -65,14 +66,11 @@ Future<void> conectarImpresora({
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
   final impresora = prefs.getString('impresora');
-  ref.read(bluetoothPrintProvider).scanResults.listen((devices) async {
-    for (final device in devices) {
-      if (device.address! == impresora) {
-        ref.read(impresoraDeviceProvider.notifier).state = device;
-        await ref.read(bluetoothPrintProvider).connect(device);
-      }
-    }
-  });
+  BluetoothDevice device = BluetoothDevice();
+  device.address = impresora;
+  device.name = 'Impresora';
+  ref.read(impresoraDeviceProvider.notifier).state = device;
+  await ref.read(bluetoothPrintProvider).connect(device);
 }
 
 //Converitir numero con decimales hasta la unidad de miles a letras

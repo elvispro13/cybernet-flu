@@ -22,15 +22,9 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
   }
 
   Future<void> initBluetooth() async {
-    print('504: Inicio escaneo');
-    await ref
+    ref
         .read(bluetoothPrintProvider)
         .startScan(timeout: const Duration(seconds: 4));
-
-    print('504: Fin escaneo');
-
-    // bool isConnected =
-    //     await ref.read(bluetoothPrintProvider).isConnected ?? false;
 
     ref.read(bluetoothPrintProvider).state.listen((state) {
       switch (state) {
@@ -46,8 +40,6 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
           break;
       }
     });
-
-    print('504: Fin initBluetooth');
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:cybernet/helpers/size_config.dart';
+import 'package:cybernet/helpers/utilidades.dart';
 import 'package:cybernet/helpers/widget_helpers.dart';
 import 'package:cybernet/models_api/factura_model.dart';
 import 'package:cybernet/models_api/facturadet_model.dart';
@@ -9,6 +10,7 @@ import 'package:cybernet/routes/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VerFacturaPage extends ConsumerStatefulWidget {
   final Factura factura;
@@ -20,6 +22,17 @@ class VerFacturaPage extends ConsumerStatefulWidget {
 }
 
 class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
+  SharedPreferences? _prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _prefs = await SharedPreferences.getInstance();
+      widget.factura.obtenerDetalles(ref.read(loginProvider));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final detalles = ref.watch(facturaDetallesProvider);
@@ -176,11 +189,14 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
             margin: const EdgeInsets.symmetric(horizontal: 20),
             child: ElevatedButton(
               onPressed: () async {
-                if(!impresoraConectada) {
+                final impresora = _prefs!.getString('impresora');
+                if (!impresoraConectada && impresora == null) {
                   modalImpresora(context);
                   return;
                 }
-                await widget.factura.obtenerDetalles(ref.read(loginProvider));
+                if (impresora != null) {
+                  await conectarImpresora(ref: ref);
+                }
                 List<LineText> list = await widget.factura.getImprecion(
                     ref.read(loginProvider).variables!,
                     ref.read(loginProvider).rango!);
