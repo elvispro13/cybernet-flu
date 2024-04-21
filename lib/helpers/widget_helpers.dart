@@ -86,7 +86,6 @@ Widget appPrincipalSinSlide({
         ],
       ),
     ),
-    // persistentFooterButtons: footer,
   );
 }
 
@@ -271,8 +270,10 @@ class _ImpresoraConexionState extends ConsumerState<ImpresoraConexion> {
                         await ref
                             .read(bluetoothPrintProvider)
                             .connect(ref.read(impresoraDeviceProvider)!);
-                        final SharedPreferences prefs = await SharedPreferences.getInstance();
-                        prefs.setString('impresora', ref.read(impresoraDeviceProvider)!.address!);
+                        final SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.setString('impresora',
+                            ref.read(impresoraDeviceProvider)!.address!);
                       } else {
                         setState(() {
                           ref.read(mensajeImpresora.notifier).state =

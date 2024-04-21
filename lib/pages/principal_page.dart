@@ -1,5 +1,4 @@
 import 'package:bluetooth_print/bluetooth_print.dart';
-import 'package:cybernet/helpers/utilidades.dart';
 import 'package:cybernet/helpers/widget_helpers.dart';
 import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
@@ -75,21 +74,6 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
                     },
                   )
                 : const SizedBox.shrink(),
-            const SizedBox(
-              height: 15,
-            ),
-            ElevatedButton(
-              child: const Text('Impresora'),
-              onPressed: () {
-                modalImpresora(context);
-              },
-            ),
-            ElevatedButton(
-              child: const Text('Conectar'),
-              onPressed: () async {
-                await conectarImpresora(ref: ref);
-              },
-            )
           ],
         ),
       ),

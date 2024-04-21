@@ -80,12 +80,6 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
               ),
               error: (error, stack) => Text('Error: $error'),
             ),
-            ElevatedButton(
-              child: const Text('Impresora'),
-              onPressed: () {
-                modalImpresora(context);
-              },
-            ),
           ],
         ),
       ),

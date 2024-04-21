@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:cybernet/helpers/size_config.dart';
 import 'package:cybernet/helpers/utilidades.dart';
@@ -23,6 +25,7 @@ class VerFacturaPage extends ConsumerStatefulWidget {
 
 class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
   SharedPreferences? _prefs;
+  Timer? _verificar;
 
   @override
   void initState() {
@@ -188,28 +191,37 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 20),
             child: ElevatedButton(
-              onPressed: () async {
-                final impresora = _prefs!.getString('impresora');
-                if (!impresoraConectada && impresora == null) {
-                  modalImpresora(context);
-                  return;
-                }
-                if (impresora != null) {
-                  await conectarImpresora(ref: ref);
-                }
-                List<LineText> list = await widget.factura.getImprecion(
-                    ref.read(loginProvider).variables!,
-                    ref.read(loginProvider).rango!);
-                ref.read(bluetoothPrintProvider).printReceipt({}, list);
-              },
-              child: const Row(
+              onPressed: impresoraConectada
+                  ? () async {
+                      await imprimir();
+                    }
+                  : () async {
+                      final impresora = _prefs!.getString('impresora');
+                      if (impresora == null) {
+                        modalImpresora(context);
+                      } else {
+                        await conectarImpresora(ref: ref);
+                        if (_verificar != null) {
+                          _verificar!.cancel();
+                          _verificar = null;
+                        }
+                        _verificar = Timer(const Duration(seconds: 3), () {
+                          modalImpresora(context);
+                          _verificar!.cancel();
+                          _verificar = null;
+                        });
+                      }
+                    },
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FaIcon(FontAwesomeIcons.print),
-                  SizedBox(
+                  const FaIcon(FontAwesomeIcons.print),
+                  const SizedBox(
                     width: 10,
                   ),
-                  Text('Imprimir Factura'),
+                  impresoraConectada
+                      ? const Text('Imprimir: Conectada')
+                      : const Text('Imprimir: No conectada'),
                 ],
               ),
             ),
@@ -220,6 +232,12 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
         ],
       ),
     );
+  }
+
+  Future<void> imprimir() async {
+    List<LineText> list = await widget.factura.getImprecion(
+        ref.read(loginProvider).variables!, ref.read(loginProvider).rango!);
+    ref.read(bluetoothPrintProvider).printReceipt({}, list);
   }
 
   _detalles(AsyncValue<List<FacturaDet>> detalles) {

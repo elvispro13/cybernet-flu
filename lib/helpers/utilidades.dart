@@ -63,14 +63,25 @@ CustomTransitionPage buildPageWithDefaultTransition<T>({
 Future<void> conectarImpresora({
   required WidgetRef ref,
 }) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  try {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  final impresora = prefs.getString('impresora');
-  BluetoothDevice device = BluetoothDevice();
-  device.address = impresora;
-  device.name = 'Impresora';
-  ref.read(impresoraDeviceProvider.notifier).state = device;
-  await ref.read(bluetoothPrintProvider).connect(device);
+    final impresora = prefs.getString('impresora');
+    BluetoothDevice device = BluetoothDevice();
+    device.address = impresora;
+    device.name = 'Impresora';
+    ref.read(impresoraDeviceProvider.notifier).state = device;
+    await ref.read(bluetoothPrintProvider).connect(device);
+  } catch (e) {
+    ref.read(impresoraConectadaProvider.notifier).state = false;
+    ref.read(mensajeImpresora.notifier).state = 'No conectada';
+  }
+}
+
+Future<void> desconectarImpresora({
+  required WidgetRef ref,
+}) async {
+  await ref.read(bluetoothPrintProvider).disconnect();
 }
 
 //Converitir numero con decimales hasta la unidad de miles a letras
