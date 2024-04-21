@@ -1,25 +1,42 @@
 import 'package:cybernet/helpers/size_config.dart';
 import 'package:cybernet/helpers/utilidades.dart';
 import 'package:cybernet/helpers/widget_helpers.dart';
+import 'package:cybernet/models_api/cliente_model.dart';
+import 'package:cybernet/models_api/respuesta_model.dart';
 import 'package:cybernet/models_api/saldo_model.dart';
-import 'package:cybernet/models_api/saldo_view_model.dart';
 import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
+import 'package:cybernet/services/clientes_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class RealizarPagoPage extends ConsumerStatefulWidget {
-  final SaldoView saldo;
-
-  const RealizarPagoPage({super.key, required this.saldo});
+  const RealizarPagoPage({super.key});
 
   @override
   createState() => _RealizarPagoPageState();
 }
 
 class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
+  Cliente? cliente;
   String tipoPagoSelected = 'Efectivo';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final login = ref.read(loginProvider);
+      final idCliente = ref.read(idClienteSaldosProvider);
+      final RespuestaModel res =
+          await ClientesService.getClientePorId(login, idCliente);
+      if (res.success) {
+        setState(() {
+          cliente = res.data;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,26 +50,11 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 20,
-            ),
-            Center(
-              child: Text(
-                widget.saldo.nombre,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-                'Saldos Pendientes, Total de deuda: ${widget.saldo.totalFormateado()}'),
-            const SizedBox(
-              height: 20,
-            ),
+            (cliente != null)
+                ? _infoCliente()
+                : const Center(
+                    child: CircularProgressIndicator(),
+                  ),
             saldos.when(
               data: (data) {
                 if (data.isEmpty) {
@@ -135,6 +137,32 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
           ],
         ),
       ),
+    );
+  }
+
+  _infoCliente() {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 20,
+        ),
+        Center(
+          child: Text(
+            cliente!.nombre,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Text('Saldos Pendientes, Total de deuda: ${cliente!.deudaTotal}'),
+        const SizedBox(
+          height: 20,
+        ),
+      ],
     );
   }
 

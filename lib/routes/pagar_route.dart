@@ -1,5 +1,4 @@
 import 'package:cybernet/helpers/utilidades.dart';
-import 'package:cybernet/models_api/saldo_view_model.dart';
 import 'package:cybernet/pages/pagar/pagar_page.dart';
 import 'package:cybernet/pages/pagar/realizar_pago_page.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +21,10 @@ class PagarRoute {
           name: 'pagar.realizar_pago',
           path: 'realizar_pago',
           pageBuilder: (BuildContext context, GoRouterState state) {
-            final saldo = state.extra as SaldoView;
             return buildPageWithDefaultTransition<void>(
               context: context,
               state: state,
-              child: RealizarPagoPage(saldo: saldo),
+              child: const RealizarPagoPage(),
             );
           },
         ),

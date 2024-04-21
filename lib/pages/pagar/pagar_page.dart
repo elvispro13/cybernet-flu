@@ -51,7 +51,6 @@ class PagarPageState extends ConsumerState<PagarPage> {
                           data[index].id;
                       ref.read(appRouterProvider).goNamed(
                             'pagar.realizar_pago',
-                            extra: data[index],
                           );
                     },
                     child: _item(data[index]),
@@ -71,15 +70,7 @@ class PagarPageState extends ConsumerState<PagarPage> {
       footer: Card(
         child: ListTile(
           leading: const Icon(Icons.search),
-          trailing: (buscarController.text.isNotEmpty)
-              ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    buscarController.clear();
-                    ref.read(saldosPBuscarProvider.notifier).state = '';
-                  },
-                )
-              : null,
+          trailing: _botonesBuscador(),
           title: TextFormField(
             controller: buscarController,
             onChanged: (value) {
@@ -91,6 +82,29 @@ class PagarPageState extends ConsumerState<PagarPage> {
           ),
         ),
       ),
+    );
+  }
+
+  _botonesBuscador() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        (buscarController.text.isNotEmpty)
+            ? IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: () {
+                  buscarController.clear();
+                  ref.read(saldosPBuscarProvider.notifier).state = '';
+                },
+              )
+            : const SizedBox(),
+        // IconButton(
+        //   icon: const Icon(Icons.payments),
+        //   onPressed: () {
+        //
+        //   },
+        // ),
+      ],
     );
   }
 
@@ -130,18 +144,25 @@ class PagarPageState extends ConsumerState<PagarPage> {
                   Text(
                     'RTN: ${saldo.rtn}',
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'Saldos Pendientes: ${saldo.cantidadSaldos}',
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'Total de Deuda: ${saldo.totalFormateado()}',
-                  ),
+                  (buscarController.text.isNotEmpty)
+                      ? const SizedBox()
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'Saldos Pendientes: ${saldo.cantidadSaldos}',
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'Total de Deuda: ${saldo.totalFormateado()}',
+                            ),
+                          ],
+                        ),
                 ],
               ),
             ),
