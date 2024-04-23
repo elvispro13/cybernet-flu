@@ -1,5 +1,4 @@
-import 'package:cybernet/helpers/utilidades.dart';
-import 'package:cybernet/providers/login_provider.dart';
+import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:cybernet/services/login_service.dart';
 import 'package:cybernet/widgets/logo.dart';
@@ -48,6 +47,9 @@ class FormularioState extends ConsumerState<_Formulario> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(contextoPaginaProvider.notifier).state = context;
+    });
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -121,7 +123,8 @@ class FormularioState extends ConsumerState<_Formulario> {
 
     setState(() => cargando = false);
     if (!res.success) {
-      if (mounted) mostrarAlerta(context, 'Aviso', res.message);
+      ref.read(alertaProvider.notifier).state = res.message;
+      // if (mounted) mostrarAlerta(context, 'Aviso', res.message);
       return;
     }
 

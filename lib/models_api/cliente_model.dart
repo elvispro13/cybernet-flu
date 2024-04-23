@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cybernet/helpers/utilidades.dart';
+
 Cliente clienteFromJson(String str) => Cliente.fromJson(json.decode(str));
 
 String clienteToJson(Cliente data) => json.encode(data.toJson());
@@ -14,7 +16,7 @@ class Cliente {
   int modificadoPor;
   DateTime fechaCreacion;
   DateTime fechaModificacion;
-  String? deudaTotal;
+  double? deudaTotal;
 
   Cliente({
     required this.id,
@@ -51,4 +53,11 @@ class Cliente {
         "FechaCreacion": fechaCreacion.toIso8601String(),
         "FechaModificacion": fechaModificacion.toIso8601String(),
       };
+
+  //Funciones
+  String deudaTotalFormateado() {
+    return formatoMoneda(numero: deudaTotal ?? 0.0);
+  }
+
+  
 }

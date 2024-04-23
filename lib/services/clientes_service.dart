@@ -22,7 +22,7 @@ class ClientesService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body)['cliente'] as Map<String, dynamic>;
         final cliente = Cliente.fromJson(data);
-        cliente.deudaTotal = jsonDecode(response.body)['deudaTotal'];
+        cliente.deudaTotal = jsonDecode(response.body)['deudaTotal']?.toDouble();
         res.success = true;
         res.data = cliente;
       } else if (response.statusCode == 401) {

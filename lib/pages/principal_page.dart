@@ -43,6 +43,9 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(contextoPaginaProvider.notifier).state = context;
+    });
     final login = ref.watch(loginProvider);
     return appPrincipal(
       titulo: 'Bienvenido a Cybernet',

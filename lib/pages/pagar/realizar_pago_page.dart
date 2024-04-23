@@ -20,7 +20,12 @@ class RealizarPagoPage extends ConsumerStatefulWidget {
 
 class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
   Cliente? cliente;
-  String tipoPagoSelected = 'Efectivo';
+  final formKey = GlobalKey<FormState>();
+  String tipoPagoSelected = '';
+  final efectivoEntregadoCtl = TextEditingController();
+  final valorPagadoCtl = TextEditingController();
+
+  bool cargando = false;
 
   @override
   void initState() {
@@ -41,7 +46,6 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
   @override
   Widget build(BuildContext context) {
     final saldos = ref.watch(saldosPendientesPorClienteProvider);
-    final alerta = ref.watch(alertaProvider);
     return appPrincipalSinSlide(
       titulo: 'Realizar Pago',
       onBack: () => ref.read(appRouterProvider).pop(),
@@ -58,12 +62,6 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
             saldos.when(
               data: (data) {
                 if (data.isEmpty) {
-                  if (alerta.isNotEmpty) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      mostrarAlerta(context, 'Aviso', alerta);
-                      ref.read(alertaProvider.notifier).state = '';
-                    });
-                  }
                   return const Center(
                     child: Text('No hay saldos que mostrar'),
                   );
@@ -85,55 +83,35 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
           ],
         ),
       ),
-      footer: Card(
+      footer: Form(
+        key: formKey,
         child: Column(
           children: [
-            const Text('Tipo de Pago'),
+            _selectorTipoPago(),
             const SizedBox(
-              height: 10,
+              height: 5,
             ),
-            SizedBox(
-              width: SizeConfig.screenWidth! * 0.90,
-              child: Center(
-                child: DropdownButton(
-                  value: tipoPagoSelected,
-                  items: <DropdownMenuItem<String>>[
-                    DropdownMenuItem(
-                      value: 'Efectivo',
-                      child: Center(
-                        child: SizedBox(
-                          width: SizeConfig.screenWidth! * 0.70,
-                          child: const Text('Efectivo'),
-                        ),
+            (tipoPagoSelected == 'Efectivo')
+                ? Column(
+                    children: [
+                      _campoEfectivoEntregado(),
+                      const SizedBox(
+                        height: 5,
                       ),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Tarjeta',
-                      child: Center(
-                        child: SizedBox(
-                          width: SizeConfig.screenWidth! * 0.70,
-                          child: const Text('Tarjeta'),
-                        ),
+                    ],
+                  )
+                : const SizedBox(),
+            (tipoPagoSelected.isNotEmpty)
+                ? Column(
+                    children: [
+                      _campoValorPagado(),
+                      const SizedBox(
+                        height: 5,
                       ),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Transferencia',
-                      child: Center(
-                        child: SizedBox(
-                          width: SizeConfig.screenWidth! * 0.70,
-                          child: const Text('Transferencia'),
-                        ),
-                      ),
-                    ),
-                  ],
-                  onChanged: (value) => {
-                    setState(() {
-                      tipoPagoSelected = value.toString();
-                    })
-                  },
-                ),
-              ),
-            ),
+                    ],
+                  )
+                : const SizedBox(),
+            _botonAplicarPago(),
           ],
         ),
       ),
@@ -144,7 +122,7 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
     return Column(
       children: [
         const SizedBox(
-          height: 20,
+          height: 10,
         ),
         Center(
           child: Text(
@@ -156,11 +134,12 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
           ),
         ),
         const SizedBox(
-          height: 20,
+          height: 10,
         ),
-        Text('Saldos Pendientes, Total de deuda: ${cliente!.deudaTotal}'),
+        Text(
+            'Saldos Pendientes, Total de deuda: ${cliente!.deudaTotalFormateado()}'),
         const SizedBox(
-          height: 20,
+          height: 10,
         ),
       ],
     );
@@ -237,6 +216,199 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
           )
         ],
       ),
+    );
+  }
+
+  _selectorTipoPago() {
+    return Card(
+      child: Column(
+        children: [
+          const Text('Tipo de Pago'),
+          const SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            width: SizeConfig.screenWidth! * 0.90,
+            child: Center(
+              child: ListTile(
+                leading: const Icon(Icons.payments),
+                title: DropdownButtonFormField(
+                  value: tipoPagoSelected,
+                  validator: (valor) =>
+                      (valor!.isEmpty) ? 'Tipo de Pago Requerido' : null,
+                  items: <DropdownMenuItem<String>>[
+                    DropdownMenuItem(
+                      value: '',
+                      child: Center(
+                        child: SizedBox(
+                          width: SizeConfig.screenWidth! * 0.60,
+                          child: const Text('[ - ]'),
+                        ),
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Efectivo',
+                      child: Center(
+                        child: SizedBox(
+                          width: SizeConfig.screenWidth! * 0.60,
+                          child: const Text('Efectivo'),
+                        ),
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Tarjeta',
+                      child: Center(
+                        child: SizedBox(
+                          width: SizeConfig.screenWidth! * 0.60,
+                          child: const Text('Tarjeta'),
+                        ),
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Transferencia',
+                      child: Center(
+                        child: SizedBox(
+                          width: SizeConfig.screenWidth! * 0.60,
+                          child: const Text('Transferencia'),
+                        ),
+                      ),
+                    ),
+                  ],
+                  onChanged: (value) => {
+                    setState(() {
+                      tipoPagoSelected = value.toString();
+                      efectivoEntregadoCtl.clear();
+                      valorPagadoCtl.clear();
+                    })
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //campo numerico de efectivo entregado
+  _campoEfectivoEntregado() {
+    return Card(
+      child: Column(
+        children: [
+          const Text('Efectivo Entregado'),
+          const SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            width: SizeConfig.screenWidth! * 0.90,
+            child: Center(
+              child: ListTile(
+                leading: const Icon(Icons.attach_money),
+                title: TextFormField(
+                  controller: efectivoEntregadoCtl,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    hintText: 'Efectivo Entregado',
+                  ),
+                  validator: (valor) {
+                    if (tipoPagoSelected == 'Efectivo' && valor!.isEmpty) {
+                      return 'Efectivo Entregado Requerido';
+                    }
+                    return null;
+                  },
+                  textInputAction: TextInputAction.next,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //campo numerico de valor pagado
+  _campoValorPagado() {
+    return Card(
+      child: Column(
+        children: [
+          const Text('Valor Pagado'),
+          const SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            width: SizeConfig.screenWidth! * 0.90,
+            child: Center(
+              child: ListTile(
+                leading: const Icon(Icons.payment),
+                title: TextFormField(
+                  controller: valorPagadoCtl,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    hintText: 'Valor Pagado',
+                  ),
+                  validator: (valor) {
+                    if (tipoPagoSelected.isNotEmpty && valor!.isEmpty) {
+                      return 'Valor Pagado Requerido';
+                    }
+                    if (tipoPagoSelected == 'Efectivo' &&
+                        double.parse(valorPagadoCtl.text) >
+                            double.parse(efectivoEntregadoCtl.text)) {
+                      return 'Valor Pagado < Efectivo Entregado';
+                    }
+                    return null;
+                  },
+                  textInputAction: TextInputAction.done,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //Botone aplicar pago
+  _botonAplicarPago() {
+    return ElevatedButton(
+      onPressed: cargando ? null : () => _aplicarPago(),
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.blue),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+        ),
+      ),
+      child: SizedBox(
+        width: SizeConfig.screenWidth! * 0.80,
+        height: 30,
+        child: Center(
+          child: cargando
+              ? const CircularProgressIndicator()
+              : const Text(
+                  'APLICAR PAGO',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.white),
+                ),
+        ),
+      ),
+    );
+  }
+
+  _aplicarPago() {
+    if (!formKey.currentState!.validate()) return;
+    final contexto = ref.read(contextoPaginaProvider);
+    mostrarConfirmacion(
+      context: contexto!,
+      titulo: 'Confirmar Pago',
+      mensaje: '¿Desea aplicar el pago?',
+      onConfirm: () async {
+        setState(() {
+          cargando = true;
+        });
+      },
     );
   }
 }

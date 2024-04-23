@@ -16,13 +16,18 @@ class PagarPage extends ConsumerStatefulWidget {
 
 class PagarPageState extends ConsumerState<PagarPage> {
   final buscarController = TextEditingController();
+  int _cantidad = 0;
 
   @override
   Widget build(BuildContext context) {
     final saldos = ref.watch(saldosPendientesProvider);
     buscarController.text = ref.watch(saldosPBuscarProvider);
+    _cantidad = saldos.maybeWhen(
+      data: (data) => data.length,
+      orElse: () => 0,
+    );
     return appPrincipalSinSlide(
-      titulo: 'Pagos Pendientes',
+      titulo: 'Pagos Pendientes: $_cantidad',
       onBack: () => _back(),
       child: PopScope(
         canPop: false,

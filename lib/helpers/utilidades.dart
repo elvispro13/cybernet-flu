@@ -5,8 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> mostrarAlerta(
-    BuildContext context, String titulo, String mensaje) async {
+void mostrarAlerta(BuildContext context, String titulo, String mensaje) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -26,6 +25,73 @@ Future<void> mostrarAlerta(
             onPressed: () {
               Navigator.of(context).pop();
             },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+//Mostrar Sanckbar
+void mostrarSnackbar(BuildContext context, String mensaje) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(mensaje),
+      duration: const Duration(seconds: 4),
+    ),
+  );
+}
+
+//Mostrar Alert Dialog para confirmar si o no
+void mostrarConfirmacion({
+  required BuildContext context,
+  required String titulo,
+  required String mensaje,
+  required Function() onConfirm,
+}) {
+  showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(titulo),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text(mensaje),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.blue),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            child:
+                const Text('CANCELAR', style: TextStyle(color: Colors.white)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              onConfirm();
+              Navigator.of(context).pop();
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.grey),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            child: const Text('ACEPTAR', style: TextStyle(color: Colors.white)),
           ),
         ],
       );
