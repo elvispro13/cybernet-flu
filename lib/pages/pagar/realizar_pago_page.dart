@@ -2,11 +2,14 @@ import 'package:cybernet/helpers/size_config.dart';
 import 'package:cybernet/helpers/utilidades.dart';
 import 'package:cybernet/helpers/widget_helpers.dart';
 import 'package:cybernet/models_api/cliente_model.dart';
+import 'package:cybernet/models_api/factura_model.dart';
 import 'package:cybernet/models_api/respuesta_model.dart';
 import 'package:cybernet/models_api/saldo_model.dart';
+import 'package:cybernet/providers/factura_provider.dart';
 import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:cybernet/services/clientes_service.dart';
+import 'package:cybernet/services/pagar_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -408,6 +411,40 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
         setState(() {
           cargando = true;
         });
+        final login = ref.read(loginProvider);
+        final idCliente = ref.read(idClienteSaldosProvider);
+        final RespuestaModel res = await PagarService.pagar(
+          login: login,
+          idCliente: idCliente,
+          tipoPago: tipoPagoSelected,
+          efectivoEntregado: (efectivoEntregadoCtl.text.isNotEmpty)
+              ? double.parse(efectivoEntregadoCtl.text)
+              : 0,
+          valorPagado: double.parse(valorPagadoCtl.text),
+        );
+        setState(() {
+          cargando = false;
+        });
+        if (res.success) {
+          ref.read(alertaProvider.notifier).state = 'Pago Aplicado';
+          ref.read(saldosPBuscarProvider.notifier).state = '';
+          ref.invalidate(saldosPendientesProvider);
+
+          // final pago = Pago.fromJson(res.data['pago'] as Map<String, dynamic>);
+          if(res.data['factura'] != 0) {
+            final factura =
+                Factura.fromJson(res.data['factura'] as Map<String, dynamic>);
+
+            ref.read(idFacturaProvider.notifier).state = factura.id;
+            ref.read(appRouterProvider).goNamed(
+                  'facturas.ver_factura',
+                  extra: factura,
+                );
+          }
+        } else {
+          ref.read(alertaProvider.notifier).state = res.message;
+        }
+        ref.read(appRouterProvider).pop();
       },
     );
   }
