@@ -1,9 +1,12 @@
+import 'package:cybernet/helpers/local_auth.dart';
 import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:cybernet/services/login_service.dart';
 import 'package:cybernet/widgets/logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -107,6 +110,20 @@ class FormularioState extends ConsumerState<_Formulario> {
                       ),
                     ),
             ),
+            const SizedBox(
+              height: 50,
+            ),
+            //Boton de huella
+            ElevatedButton(
+              onPressed: () => _obtenerUsuario(),
+              child: const SizedBox(
+                width: 80,
+                height: 80,
+                child: Center(
+                  child: FaIcon(FontAwesomeIcons.fingerprint, size: 50),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -114,8 +131,6 @@ class FormularioState extends ConsumerState<_Formulario> {
   }
 
   _iniciarSesion(String usuario, String password) async {
-    // final biometricAuth = await LocalAuth.authenticate();
-    // if (!biometricAuth) return;
     if (!formKey.currentState!.validate()) return;
     setState(() => cargando = true);
 
@@ -124,9 +139,10 @@ class FormularioState extends ConsumerState<_Formulario> {
     setState(() => cargando = false);
     if (!res.success) {
       ref.read(alertaProvider.notifier).state = res.message;
-      // if (mounted) mostrarAlerta(context, 'Aviso', res.message);
       return;
     }
+
+    _guardarUsuario(usuario, password);
 
     ref.read(loginProvider.notifier).state = res.data;
 
@@ -138,6 +154,28 @@ class FormularioState extends ConsumerState<_Formulario> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Card(child: ListTile(leading: Icon(icon), title: item)),
     );
+  }
+
+  _guardarUsuario(String usuario, String password) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('usuario', usuario);
+    await prefs.setString('password', password);
+  }
+
+  _obtenerUsuario() async {
+    final biometricAuth = await LocalAuth.authenticate();
+    if (!biometricAuth) {
+      ref.read(alertaProvider.notifier).state = 'Autenticación fallida';
+      return;
+    }
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final usuario = prefs.getString('usuario');
+    final password = prefs.getString('password');
+    if (usuario != null && password != null) {
+      usuarioCtrl.text = usuario;
+      passwordCtrl.text = password;
+      _iniciarSesion(usuario, password);
+    }
   }
 }
 

@@ -11,7 +11,7 @@ class LocalAuth {
     try {
       if (!await canCheckBiometrics) return false;
       return await _localAuth.authenticate(
-        localizedReason: 'Please authenticate to show account balance',
+        localizedReason: 'Por favor, autentíquese para continuar',
       );
     } catch (e) {
       return false;

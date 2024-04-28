@@ -19,7 +19,7 @@ class PagarService {
       'idCliente': idCliente,
       'TipoPago': tipoPago,
       'EfectivoEntregado': efectivoEntregado,
-      'valorPagado': valorPagado,
+      'ValorPagado': valorPagado,
     };
 
     final url = Uri.parse('${Environment.apiUrl}/pagar');

@@ -223,7 +223,7 @@ class Factura {
     list.add(_linea(''));
 
     list.add(_linea('Pago: ${efectivoEntregadoFormateado()}'));
-    list.add(_linea('Cambio: ${cambioEfectivoFormateado()}'));
+    if(cambioEfectivo > 0) list.add(_linea('Cambio: ${cambioEfectivoFormateado()}'));
 
     list.add(_linea(''));
 

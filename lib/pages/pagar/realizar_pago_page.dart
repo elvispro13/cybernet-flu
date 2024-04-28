@@ -3,6 +3,7 @@ import 'package:cybernet/helpers/utilidades.dart';
 import 'package:cybernet/helpers/widget_helpers.dart';
 import 'package:cybernet/models_api/cliente_model.dart';
 import 'package:cybernet/models_api/factura_model.dart';
+import 'package:cybernet/models_api/pago_model.dart';
 import 'package:cybernet/models_api/respuesta_model.dart';
 import 'package:cybernet/models_api/saldo_model.dart';
 import 'package:cybernet/providers/factura_provider.dart';
@@ -430,8 +431,9 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
           ref.read(saldosPBuscarProvider.notifier).state = '';
           ref.invalidate(saldosPendientesProvider);
 
-          // final pago = Pago.fromJson(res.data['pago'] as Map<String, dynamic>);
-          if(res.data['factura'] != 0) {
+          if(res.data['factura'] == 0) {
+            final pago = Pago.fromJson(res.data['pago'] as Map<String, dynamic>);
+          }else{
             final factura =
                 Factura.fromJson(res.data['factura'] as Map<String, dynamic>);
 
