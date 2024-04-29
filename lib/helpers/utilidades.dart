@@ -462,3 +462,18 @@ String convertirNumeroALetras(double numero) {
 
   return resultado;
 }
+
+LineText linea(String texto) {
+  if (texto == '') {
+    return LineText(linefeed: 1);
+  }
+  return LineText(type: LineText.TYPE_TEXT, content: texto, linefeed: 1);
+}
+
+LineText lineaCentrada(String texto) {
+  return LineText(
+      type: LineText.TYPE_TEXT,
+      content: texto,
+      align: LineText.ALIGN_CENTER,
+      linefeed: 1);
+}

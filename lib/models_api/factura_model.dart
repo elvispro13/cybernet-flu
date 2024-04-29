@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:cybernet/helpers/utilidades.dart';
@@ -163,104 +162,88 @@ class Factura {
         linefeed: 1,
         width: 200));
 
-    // list.add(_linea('================================'));
-    list.add(_linea(variables.nombreEmpresa));
-    list.add(_linea('RTN: ${variables.rtnEmpresa}'));
-    list.add(_linea('TEL: ${variables.telefonoEmpresa}'));
-    list.add(_linea(variables.correoEmpresa));
-    list.add(_linea('DIR: ${variables.direccionEmpresa}'));
-    list.add(_linea('--------------------------------'));
-    list.add(_lineaCentrada('FACTURA'));
-    list.add(_linea('--------------------------------'));
-    list.add(_linea('No. Factura: $tipoFactura'));
-    list.add(_linea('Atendido por:'));
-    list.add(_linea(creadoPorNombre));
-    list.add(_linea('No. Factura: $numeroFactura'));
-    list.add(_linea('Nombre del cliente:'));
-    list.add(_linea(removeDiacritics(nombreCliente)));
-    list.add(_linea('RTN del cliente:'));
-    list.add(_linea(rtn));
-    list.add(_linea('--------------------------------'));
-    list.add(_lineaCentrada('EMISION'));
-    list.add(_linea('--------------------------------'));
-    list.add(_linea('Fecha: ${fechaEmisionSinHora()}'));
-    list.add(_linea('Hora: ${horaEmision()}'));
-    list.add(_linea('--------------------------------'));
-    list.add(_lineaCentrada('IMPRESION'));
-    list.add(_linea('--------------------------------'));
-    list.add(_linea(
+    list.add(linea(variables.nombreEmpresa));
+    list.add(linea('RTN: ${variables.rtnEmpresa}'));
+    list.add(linea('TEL: ${variables.telefonoEmpresa}'));
+    list.add(linea(variables.correoEmpresa));
+    list.add(linea('DIR: ${variables.direccionEmpresa}'));
+    list.add(linea('--------------------------------'));
+    list.add(lineaCentrada('FACTURA'));
+    list.add(linea('--------------------------------'));
+    list.add(linea('Tipo de Factura: $tipoFactura'));
+    list.add(linea('Atendido por:'));
+    list.add(linea(creadoPorNombre));
+    list.add(linea('No. Factura: $numeroFactura'));
+    list.add(linea('Nombre del cliente:'));
+    list.add(linea(removeDiacritics(nombreCliente)));
+    list.add(linea('RTN del cliente:'));
+    list.add(linea(rtn));
+    list.add(linea('--------------------------------'));
+    list.add(lineaCentrada('EMISION'));
+    list.add(linea('--------------------------------'));
+    list.add(linea('Fecha: ${fechaEmisionSinHora()}'));
+    list.add(linea('Hora: ${horaEmision()}'));
+    list.add(linea('--------------------------------'));
+    list.add(lineaCentrada('IMPRESION'));
+    list.add(linea('--------------------------------'));
+    list.add(linea(
         'Fecha: ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}'));
-    list.add(_linea('Hora: ${DateTime.now().hour}:${DateTime.now().minute}'));
-    list.add(_linea('--------------------------------'));
-    list.add(_lineaCentrada('DATOS DEL ADQUIRIENTE EXONERADO'));
-    list.add(_linea('No. de Orden de Compra Exenta:'));
-    list.add(_linea('________________________________'));
-    list.add(_linea('No. de Constacia de Registro'));
-    list.add(_linea('Exonerado:'));
-    list.add(_linea('________________________________'));
-    list.add(_linea('Numero Registro de SAG:'));
-    list.add(_linea('________________________________'));
+    list.add(linea('Hora: ${DateTime.now().hour}:${DateTime.now().minute}'));
+    list.add(linea('--------------------------------'));
+    list.add(lineaCentrada('DATOS DEL ADQUIRIENTE EXONERADO'));
+    list.add(linea('No. de Orden de Compra Exenta:'));
+    list.add(linea('________________________________'));
+    list.add(linea('No. de Constacia de Registro'));
+    list.add(linea('Exonerado:'));
+    list.add(linea('________________________________'));
+    list.add(linea('Numero Registro de SAG:'));
+    list.add(linea('________________________________'));
 
     //Recorrer los detalles
     for (var det in detalles) {
-      list.add(_linea('Producto/Servicio'));
-      list.add(_linea(det.descripcion));
-      list.add(_linea('Cantidad: ${det.cantidad}'));
-      list.add(_linea('Valor unitario: ${formatoMoneda(numero: det.precio)}'));
-      list.add(_linea(''));
+      list.add(linea('Producto/Servicio'));
+      list.add(linea(det.descripcion));
+      list.add(linea('Cantidad: ${det.cantidad}'));
+      list.add(linea('Valor unitario: ${formatoMoneda(numero: det.precio)}'));
+      list.add(linea(''));
     }
 
-    list.add(_linea('Total Exonerado: ${exoneradoFormateado()}'));
-    list.add(_linea('Total Exento: ${exentoFormateado()}'));
-    list.add(_linea('Total Gravado 15%: ${gravado1Formateado()}'));
-    list.add(_linea('Total Gravado 18%: ${gravado2Formateado()}'));
-    list.add(_linea('Descuentos y Rebaja: ${descuentoFormateado()}'));
-    list.add(_linea('SubTotal 15%: ${isv1Formateado()}'));
-    list.add(_linea('SubTotal 18%: ${isv2Formateado()}'));
-    list.add(_linea('Total Impuestos: ${isvTotalFormateado()}'));
-    list.add(_linea('Total: ${totalFormateado()}'));
+    list.add(linea('Total Exonerado: ${exoneradoFormateado()}'));
+    list.add(linea('Total Exento: ${exentoFormateado()}'));
+    list.add(linea('Total Gravado 15%: ${gravado1Formateado()}'));
+    list.add(linea('Total Gravado 18%: ${gravado2Formateado()}'));
+    list.add(linea('Descuentos y Rebaja: ${descuentoFormateado()}'));
+    list.add(linea('SubTotal 15%: ${isv1Formateado()}'));
+    list.add(linea('SubTotal 18%: ${isv2Formateado()}'));
+    list.add(linea('Total Impuestos: ${isvTotalFormateado()}'));
+    list.add(linea('Total: ${totalFormateado()}'));
 
-    list.add(_linea(''));
+    list.add(linea(''));
 
-    list.add(_linea('Pago: ${efectivoEntregadoFormateado()}'));
-    if(cambioEfectivo > 0) list.add(_linea('Cambio: ${cambioEfectivoFormateado()}'));
+    list.add(linea('Pago: ${efectivoEntregadoFormateado()}'));
+    if(cambioEfectivo > 0) list.add(linea('Cambio: ${cambioEfectivoFormateado()}'));
 
-    list.add(_linea(''));
+    list.add(linea(''));
 
-    list.add(_linea('Tipo de Pago: $tipoPago'));
+    list.add(linea('Tipo de Pago: $tipoPago'));
 
-    list.add(_linea(''));
+    list.add(linea(''));
 
-    list.add(_linea('TOTAL EN LETRAS'));
-    list.add(_linea(convertirNumeroALetras(total)));
-    list.add(_linea('CAI: $cai'));
-    list.add(_linea('Rango Autorizado de Emision:'));
-    list.add(_linea('${rango.numeroInicial} a ${rango.numeroFinal}'));
-    list.add(_linea('Fecha Limite de Emision:'));
-    list.add(_linea('${rango.fechaLimite.day}/${rango.fechaLimite.month}/${rango.fechaLimite.year}'));
-    list.add(_linea('GRACIAS POR PREFIERIRNOS'));
-    list.add(_linea('La factura es un beneficio'));
-    list.add(_linea('de todos, exijala!'));
-    list.add(_linea('ORIGINAL: CLIENTE'));
-    list.add(_linea('COPIA: OBLIGADO TRIBUTARIO'));
-    list.add(_linea('EMISOR'));
+    list.add(linea('TOTAL EN LETRAS'));
+    list.add(linea(convertirNumeroALetras(total)));
+    list.add(linea('CAI: $cai'));
+    list.add(linea('Rango Autorizado de Emision:'));
+    list.add(linea('${rango.numeroInicial} a ${rango.numeroFinal}'));
+    list.add(linea('Fecha Limite de Emision:'));
+    list.add(linea('${rango.fechaLimite.day}/${rango.fechaLimite.month}/${rango.fechaLimite.year}'));
+    list.add(linea('GRACIAS POR PREFIERIRNOS'));
+    list.add(linea('La factura es un beneficio'));
+    list.add(linea('de todos, exijala!'));
+    list.add(linea('ORIGINAL: CLIENTE'));
+    list.add(linea('COPIA: OBLIGADO TRIBUTARIO'));
+    list.add(linea('EMISOR'));
 
     return list;
-  }
-
-  LineText _linea(String texto) {
-    if (texto == '') {
-      return LineText(linefeed: 1);
-    }
-    return LineText(type: LineText.TYPE_TEXT, content: texto, linefeed: 1);
-  }
-
-  LineText _lineaCentrada(String texto) {
-    return LineText(
-        type: LineText.TYPE_TEXT,
-        content: texto,
-        align: LineText.ALIGN_CENTER,
-        linefeed: 1);
   }
 
   //Funciones
