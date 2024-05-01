@@ -4,6 +4,7 @@ import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:cybernet/helpers/size_config.dart';
 import 'package:cybernet/helpers/utilidades.dart';
 import 'package:cybernet/helpers/widget_helpers.dart';
+import 'package:cybernet/modales/impresora_conexion_modal.dart';
 import 'package:cybernet/models_api/factura_model.dart';
 import 'package:cybernet/models_api/facturadet_model.dart';
 import 'package:cybernet/providers/factura_provider.dart';
@@ -32,7 +33,6 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _prefs = await SharedPreferences.getInstance();
-      widget.factura.obtenerDetalles(ref.read(loginProvider));
     });
   }
 
@@ -198,7 +198,7 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
                   : () async {
                       final impresora = _prefs!.getString('impresora');
                       if (impresora == null) {
-                        modalImpresora(context);
+                        modalGeneral(context, const ImpresoraConexion());
                       } else {
                         await conectarImpresora(ref: ref);
                         if (_verificar != null) {
@@ -206,7 +206,7 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
                           _verificar = null;
                         }
                         _verificar = Timer(const Duration(seconds: 3), () {
-                          modalImpresora(context);
+                          modalGeneral(context, const ImpresoraConexion());
                           _verificar!.cancel();
                           _verificar = null;
                         });

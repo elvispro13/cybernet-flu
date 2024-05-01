@@ -68,6 +68,18 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
             const SizedBox(
               height: 15,
             ),
+            (login.can('ver-pago'))
+                ? btScreenPrincipal(
+                    label: 'PAGOS',
+                    icono: const FaIcon(FontAwesomeIcons.list),
+                    onPressed: () {
+                      ref.read(appRouterProvider).goNamed('pagos');
+                    },
+                  )
+                : const SizedBox.shrink(),
+            const SizedBox(
+              height: 15,
+            ),
             (login.can('ver-factura'))
                 ? btScreenPrincipal(
                     label: 'FACTURAS',

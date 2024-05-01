@@ -9,6 +9,7 @@ import 'package:cybernet/models_api/respuesta_model.dart';
 import 'package:cybernet/models_api/saldo_model.dart';
 import 'package:cybernet/providers/factura_provider.dart';
 import 'package:cybernet/providers/index.dart';
+import 'package:cybernet/providers/pago_provder.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:cybernet/services/clientes_service.dart';
 import 'package:cybernet/services/pagar_service.dart';
@@ -435,7 +436,12 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
           if (res.data['factura'] == 0) {
             final pago =
                 Pago.fromJson(res.data['pago'] as Map<String, dynamic>);
-            await pago.obtenerDetalles(login);
+
+            ref.read(idPagoProvider.notifier).state = pago.id;
+            ref.read(appRouterProvider).goNamed(
+                  'pagos.ver_pago',
+                  extra: pago,
+                );
           } else {
             final factura =
                 Factura.fromJson(res.data['factura'] as Map<String, dynamic>);

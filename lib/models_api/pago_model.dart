@@ -2,11 +2,10 @@ import 'dart:convert';
 
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:cybernet/helpers/utilidades.dart';
-import 'package:cybernet/models_api/login_model.dart';
 import 'package:cybernet/models_api/pagodet_model.dart';
 import 'package:cybernet/models_api/variables_model.dart';
-import 'package:cybernet/services/pagos_service.dart';
 import 'package:diacritic/diacritic.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 Pago pagoFromJson(String str) => Pago.fromJson(json.decode(str));
@@ -28,7 +27,15 @@ class Pago {
   DateTime fechaModificacion;
   DateTime fechaCreacion;
   int id;
+  String creadoPorNombre;
+  String modificadoPorNombre;
   List<PagoDet> detalles = [];
+
+  final estados = {
+    'P': {'Nombre': 'Pagado', 'Color': Colors.green},
+    'A': {'Nombre': 'Anulado', 'Color': Colors.red},
+    'M': {'Nombre': 'Manual', 'Color': Colors.green},
+  };
 
   Pago({
     required this.idCliente,
@@ -45,6 +52,8 @@ class Pago {
     required this.fechaModificacion,
     required this.fechaCreacion,
     required this.id,
+    required this.creadoPorNombre,
+    required this.modificadoPorNombre,
   });
 
   factory Pago.fromJson(Map<String, dynamic> json) => Pago(
@@ -62,6 +71,8 @@ class Pago {
         fechaModificacion: DateTime.parse(json["FechaModificacion"]),
         fechaCreacion: DateTime.parse(json["FechaCreacion"]),
         id: json["id"],
+        creadoPorNombre: json["CreadoPorNombre"],
+        modificadoPorNombre: json["ModificadoPorNombre"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -79,14 +90,9 @@ class Pago {
         "FechaModificacion": fechaModificacion.toIso8601String(),
         "FechaCreacion": fechaCreacion.toIso8601String(),
         "id": id,
+        "CreadoPorNombre": creadoPorNombre,
+        "ModificadoPorNombre": modificadoPorNombre,
       };
-
-  Future<void> obtenerDetalles(Login login) async {
-    final res = await PagosService.getPagoDetalles(login, id);
-    if (res.success) {
-      detalles = res.data as List<PagoDet>;
-    }
-  }
 
   Future<List<LineText>> getImprecion(Variables variables) async {
     List<LineText> list = [];
@@ -123,19 +129,30 @@ class Pago {
     list.add(linea(
         'Fecha: ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}'));
     list.add(linea('Hora: ${DateTime.now().hour}:${DateTime.now().minute}'));
+    list.add(linea(''));
 
     //Recorrer los detalles
     for (var det in detalles) {
       list.add(linea('Producto/Servicio'));
       list.add(linea(det.descripcion));
-      list.add(linea('Valor: ${formatoMoneda(numero: det.monto)}'));
+      list.add(linea('Monto: ${formatoMoneda(numero: det.monto)}'));
       list.add(linea(''));
     }
 
     list.add(linea('Total: ${totalFormateado()}'));
     list.add(linea('GRACIAS POR PREFIERIRNOS'));
+    list.add(linea(''));
 
     return list;
+  }
+
+  //Funciones
+  String cambioEfectivoFormateado() {
+    return formatoMoneda(numero: cambioEfectivo);
+  }
+
+  String efectivoEntregadoFormateado() {
+    return formatoMoneda(numero: efectivoEntregado);
   }
 
   String totalFormateado() {
@@ -148,5 +165,13 @@ class Pago {
 
   String horaEmision() {
     return '${fechaEmision.hour}:${fechaEmision.minute}';
+  }
+
+  String estadoDet() {
+    return estados[estado]?['Nombre'] as String;
+  }
+
+  Color estadoColor() {
+    return estados[estado]?['Color'] as Color;
   }
 }

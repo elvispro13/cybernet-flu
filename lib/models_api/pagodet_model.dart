@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cybernet/helpers/utilidades.dart';
+
 PagoDet pagoDetFromJson(String str) => PagoDet.fromJson(json.decode(str));
 
 String pagoDetToJson(PagoDet data) => json.encode(data.toJson());
@@ -54,4 +56,9 @@ class PagoDet {
         "FechaCreacion": fechaCreacion.toIso8601String(),
         "FechaModificacion": fechaModificacion.toIso8601String(),
       };
+
+  //Funciones
+  String montoFormateado() {
+    return formatoMoneda(numero: monto);
+  }
 }

@@ -3,6 +3,7 @@ import 'package:cybernet/pages/impresora_page.dart';
 import 'package:cybernet/pages/index.dart';
 import 'package:cybernet/routes/facturas_route.dart';
 import 'package:cybernet/routes/pagar_route.dart';
+import 'package:cybernet/routes/pagos_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -35,6 +36,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       },
       routes: [
         PagarRoute.getRuta(),
+        PagosRoute.getRuta(),
         FacturasRoute.getRuta(),
         GoRoute(
           name: 'print',

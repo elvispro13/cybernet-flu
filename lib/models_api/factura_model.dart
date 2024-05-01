@@ -3,10 +3,8 @@ import 'dart:convert';
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:cybernet/helpers/utilidades.dart';
 import 'package:cybernet/models_api/facturadet_model.dart';
-import 'package:cybernet/models_api/login_model.dart';
 import 'package:cybernet/models_api/rango_model.dart';
 import 'package:cybernet/models_api/variables_model.dart';
-import 'package:cybernet/services/facturas_service.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -141,13 +139,6 @@ class Factura {
         "ModificadoPorNombre": modificadoPorNombre,
       };
 
-  Future<void> obtenerDetalles(Login login) async {
-    final res = await FacturasService.getFacturaDetalles(login, id);
-    if (res.success) {
-      detalles = res.data as List<FacturaDet>;
-    }
-  }
-
   Future<List<LineText>> getImprecion(Variables variables, Rango rango) async {
     List<LineText> list = [];
 
@@ -242,6 +233,7 @@ class Factura {
     list.add(linea('ORIGINAL: CLIENTE'));
     list.add(linea('COPIA: OBLIGADO TRIBUTARIO'));
     list.add(linea('EMISOR'));
+    list.add(linea(''));
 
     return list;
   }
