@@ -1,4 +1,3 @@
-import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:cybernet/helpers/size_config.dart';
 import 'package:cybernet/helpers/utilidades.dart';
 import 'package:cybernet/helpers/widget_helpers.dart';
@@ -458,11 +457,5 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
         ref.read(appRouterProvider).pop();
       },
     );
-  }
-
-  Future<void> _imprimirComprobante(Pago pago) async {
-    List<LineText> list =
-        await pago.getImprecion(ref.read(loginProvider).variables!);
-    ref.read(bluetoothPrintProvider).printReceipt({}, list);
   }
 }

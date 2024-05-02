@@ -42,10 +42,21 @@ class FormularioState extends ConsumerState<_Formulario> {
   final passwordCtrl = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool cargando = false;
+  bool huella = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final usuario = prefs.getString('usuario');
+      final password = prefs.getString('password');
+      if (usuario != null && password != null) {
+        setState(() {
+          huella = true;
+        });
+      }
+    });
   }
 
   @override
@@ -114,16 +125,18 @@ class FormularioState extends ConsumerState<_Formulario> {
               height: 50,
             ),
             //Boton de huella
-            ElevatedButton(
-              onPressed: () => _obtenerUsuario(),
-              child: const SizedBox(
-                width: 80,
-                height: 80,
-                child: Center(
-                  child: FaIcon(FontAwesomeIcons.fingerprint, size: 50),
-                ),
-              ),
-            ),
+            (huella)
+                ? ElevatedButton(
+                    onPressed: () => _obtenerUsuario(),
+                    child: const SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Center(
+                        child: FaIcon(FontAwesomeIcons.fingerprint, size: 50),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink()
           ],
         ),
       ),

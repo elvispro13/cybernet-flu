@@ -183,55 +183,15 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
           ],
         ),
       ),
-      footer: Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            child: ElevatedButton(
-              onPressed: impresoraConectada
-                  ? () async {
-                      await imprimir();
-                    }
-                  : () async {
-                      final impresora = _prefs!.getString('impresora');
-                      if (impresora == null) {
-                        modalGeneral(context, const ImpresoraConexion());
-                      } else {
-                        await conectarImpresora(ref: ref);
-                        if (_verificar != null) {
-                          _verificar!.cancel();
-                          _verificar = null;
-                        }
-                        _verificar = Timer(const Duration(seconds: 3), () {
-                          modalGeneral(context, const ImpresoraConexion());
-                          _verificar!.cancel();
-                          _verificar = null;
-                        });
-                      }
-                    },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const FaIcon(FontAwesomeIcons.print),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  impresoraConectada
-                      ? const Text('Imprimir: Conectada')
-                      : const Text('Imprimir: No conectada'),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
-      ),
+      footer: _footer(impresoraConectada),
     );
+  }
+
+  Widget _footer(bool impresoraConectada) {
+    if (widget.factura.detalles.isNotEmpty) {
+      return _botonImprimirPago(impresoraConectada);
+    }
+    return const SizedBox.shrink();
   }
 
   Future<void> imprimir() async {
@@ -243,6 +203,7 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
   _detalles(AsyncValue<List<FacturaDet>> detalles) {
     return detalles.when(
       data: (data) {
+        widget.factura.detalles = data;
         return Column(
           children: data
               .map<Widget>(
@@ -309,5 +270,56 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
         ],
       ),
     );
+  }
+
+  _botonImprimirPago(bool impresoraConectada) {
+    return Column(
+        children: [
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            child: ElevatedButton(
+              onPressed: impresoraConectada
+                  ? () async {
+                      await imprimir();
+                    }
+                  : () async {
+                      final impresora = _prefs!.getString('impresora');
+                      if (impresora == null) {
+                        modalGeneral(context, const ImpresoraConexion());
+                      } else {
+                        await conectarImpresora(ref: ref);
+                        if (_verificar != null) {
+                          _verificar!.cancel();
+                          _verificar = null;
+                        }
+                        _verificar = Timer(const Duration(seconds: 3), () {
+                          modalGeneral(context, const ImpresoraConexion());
+                          _verificar!.cancel();
+                          _verificar = null;
+                        });
+                      }
+                    },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const FaIcon(FontAwesomeIcons.print),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  impresoraConectada
+                      ? const Text('Imprimir: Conectada')
+                      : const Text('Imprimir: No conectada'),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+        ],
+      );
   }
 }
