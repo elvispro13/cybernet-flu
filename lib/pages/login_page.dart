@@ -6,6 +6,7 @@ import 'package:cybernet/widgets/logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatelessWidget {
@@ -145,9 +146,11 @@ class FormularioState extends ConsumerState<_Formulario> {
 
   _iniciarSesion(String usuario, String password) async {
     if (!formKey.currentState!.validate()) return;
+    final info = await PackageInfo.fromPlatform();
     setState(() => cargando = true);
 
-    final res = await LoginService.iniciarSesion(usuario, password);
+    final res =
+        await LoginService.iniciarSesion(info.version, usuario, password);
 
     setState(() => cargando = false);
     if (!res.success) {

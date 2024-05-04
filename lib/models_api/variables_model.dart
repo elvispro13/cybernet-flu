@@ -12,6 +12,7 @@ class Variables {
   String direccionEmpresa;
   String telefonoEmpresa;
   String mensaje;
+  String versionMobil;
   int creadoPor;
   int modificadoPor;
   DateTime fechaCreacion;
@@ -25,6 +26,7 @@ class Variables {
     required this.direccionEmpresa,
     required this.telefonoEmpresa,
     required this.mensaje,
+    required this.versionMobil,
     required this.creadoPor,
     required this.modificadoPor,
     required this.fechaCreacion,
@@ -39,6 +41,7 @@ class Variables {
         direccionEmpresa: json["DireccionEmpresa"],
         telefonoEmpresa: json["TelefonoEmpresa"],
         mensaje: json["Mensaje"],
+        versionMobil: json["VersionMobil"],
         creadoPor: json["CreadoPor"],
         modificadoPor: json["ModificadoPor"],
         fechaCreacion: DateTime.parse(json["FechaCreacion"]),
@@ -53,6 +56,7 @@ class Variables {
         "DireccionEmpresa": direccionEmpresa,
         "TelefonoEmpresa": telefonoEmpresa,
         "Mensaje": mensaje,
+        "VersionMobil": versionMobil,
         "CreadoPor": creadoPor,
         "ModificadoPor": modificadoPor,
         "FechaCreacion": fechaCreacion.toIso8601String(),

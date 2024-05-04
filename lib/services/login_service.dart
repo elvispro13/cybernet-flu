@@ -6,10 +6,11 @@ import 'package:cybernet/models_api/respuesta_model.dart';
 import 'package:http/http.dart' as http;
 
 class LoginService {
-  static Future<RespuestaModel> iniciarSesion(String usuario, String password) async {
+  static Future<RespuestaModel> iniciarSesion(String version, String usuario, String password) async {
     final res = RespuestaModel();
 
     final data = {
+      'version': version,
       'usuario': usuario,
       'password': password,
     };
