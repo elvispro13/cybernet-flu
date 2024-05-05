@@ -1,7 +1,9 @@
+import 'package:cybernet/models_api/contrato_servicio_model.dart';
 import 'package:cybernet/models_api/respuesta_model.dart';
 import 'package:cybernet/models_api/saldo_view_model.dart';
 import 'package:cybernet/models_api/saldo_model.dart';
 import 'package:cybernet/providers/index.dart';
+import 'package:cybernet/services/clientes_service.dart';
 import 'package:cybernet/services/saldos_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,6 +27,18 @@ final saldosPendientesPorClienteProvider = FutureProvider.autoDispose<List<Saldo
   final idCliente = ref.watch(idClienteSaldosProvider);
   final login = ref.watch(loginProvider);
   final RespuestaModel res = await SaldosService.getSaldosPendientesPorCliente(login, idCliente);
+  if (res.success) {
+    return res.data;
+  } else {
+    ref.read(alertaProvider.notifier).state = res.message;
+    return [];
+  }
+});
+
+final serviciosPorClienteProvider = FutureProvider.autoDispose<List<ContratoServicio>>((ref) async {
+  final idCliente = ref.watch(idClienteSaldosProvider);
+  final login = ref.watch(loginProvider);
+  final RespuestaModel res = await ClientesService.serviciosPorCliente(login, idCliente);
   if (res.success) {
     return res.data;
   } else {

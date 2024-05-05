@@ -10,6 +10,7 @@ class PagarService {
     required Login login,
     required int idCliente,
     required String tipoPago,
+    required int idServicio,
     required double efectivoEntregado,
     required double valorPagado,
   }) async {
@@ -18,6 +19,7 @@ class PagarService {
     final data = {
       'idCliente': idCliente,
       'TipoPago': tipoPago,
+      'idServicio': idServicio,
       'EfectivoEntregado': efectivoEntregado,
       'ValorPagado': valorPagado,
     };

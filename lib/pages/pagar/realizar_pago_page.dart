@@ -27,6 +27,7 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
   Cliente? cliente;
   final formKey = GlobalKey<FormState>();
   String tipoPagoSelected = '';
+  int idServicio = 0;
   final efectivoEntregadoCtl = TextEditingController();
   final valorPagadoCtl = TextEditingController();
 
@@ -58,70 +59,77 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
     return appPrincipalSinSlide(
       titulo: 'Realizar Pago',
       onBack: () => ref.read(appRouterProvider).pop(),
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            (cliente != null)
-                ? _infoCliente()
-                : const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-            saldos.when(
-              data: (data) {
-                if (data.isEmpty) {
-                  return const Center(
-                    child: Text('No hay saldos que mostrar'),
+      child: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              (cliente != null)
+                  ? _infoCliente()
+                  : const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+              saldos.when(
+                data: (data) {
+                  if (data.isEmpty) {
+                    return const Center(
+                      child: Text('No hay saldos que mostrar'),
+                    );
+                  }
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      return _itemSaldo(data[index]);
+                    },
                   );
-                }
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: data.length,
-                  itemBuilder: (context, index) {
-                    return _itemSaldo(data[index]);
-                  },
-                );
-              },
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
+                },
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                error: (error, stack) => Text('Error: $error'),
               ),
-              error: (error, stack) => Text('Error: $error'),
-            ),
-          ],
-        ),
-      ),
-      footer: Form(
-        key: formKey,
-        child: Column(
-          children: [
-            _selectorTipoPago(),
-            const SizedBox(
-              height: 5,
-            ),
-            (tipoPagoSelected == 'Efectivo')
-                ? Column(
-                    children: [
-                      _campoEfectivoEntregado(),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                    ],
-                  )
-                : const SizedBox(),
-            (tipoPagoSelected.isNotEmpty)
-                ? Column(
-                    children: [
-                      _campoValorPagado(),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                    ],
-                  )
-                : const SizedBox(),
-            _botonAplicarPago(),
-          ],
+              const SizedBox(
+                height: 10,
+              ),
+              Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    _selectorTipoPago(),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    (tipoPagoSelected == 'Efectivo')
+                        ? Column(
+                            children: [
+                              _campoEfectivoEntregado(),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                            ],
+                          )
+                        : const SizedBox.shrink(),
+                    (tipoPagoSelected.isNotEmpty)
+                        ? Column(
+                            children: [
+                              _campoValorPagado(),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                            ],
+                          )
+                        : const SizedBox.shrink(),
+                    (tipoPagoSelected.isNotEmpty)
+                        ? _selectorIdServicio()
+                        : const SizedBox.shrink(),
+                    _botonAplicarPago(),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -223,6 +231,66 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
               ),
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  _selectorIdServicio() {
+    final servicios = ref.watch(serviciosPorClienteProvider);
+    return Card(
+      child: Column(
+        children: [
+          const Text('Servicio a aplicar pago adelantado'),
+          const SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            width: SizeConfig.screenWidth! * 0.90,
+            child: Center(
+              child: ListTile(
+                leading: const Icon(Icons.payments),
+                title: servicios.when(
+                  data: (data) {
+                    return DropdownButtonFormField(
+                      value: idServicio,
+                      validator: (valor) =>
+                          (valor! == 0) ? 'Servicio Requerido' : null,
+                      items: <DropdownMenuItem<int>>[
+                        DropdownMenuItem(
+                          value: 0,
+                          child: Center(
+                            child: SizedBox(
+                              width: SizeConfig.screenWidth! * 0.60,
+                              child: const Text('[ - ]'),
+                            ),
+                          ),
+                        ),
+                        ...data
+                            .map(
+                              (e) => DropdownMenuItem(
+                                value: e.id,
+                                child: Center(
+                                  child: SizedBox(
+                                    width: SizeConfig.screenWidth! * 0.60,
+                                    child: Text(e.descripcion),
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ],
+                      onChanged: (value) => setState(() {
+                        idServicio = value!;
+                      }),
+                    );
+                  },
+                  loading: () => const Text('Cargando...'),
+                  error: (error, stack) => Text('Error: $error'),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -423,6 +491,7 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
           login: login,
           idCliente: idCliente,
           tipoPago: tipoPagoSelected,
+          idServicio: idServicio,
           efectivoEntregado: (efectivoEntregadoCtl.text.isNotEmpty)
               ? double.parse(efectivoEntregadoCtl.text)
               : 0,
