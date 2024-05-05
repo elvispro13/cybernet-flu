@@ -135,9 +135,23 @@ class Pago {
     for (var det in detalles) {
       list.add(linea('Producto/Servicio'));
       list.add(linea(det.descripcion));
-      list.add(linea('Monto: ${formatoMoneda(numero: det.monto)}'));
+      list.add(linea('Monto: ${det.montoFormateado()}'));
+      if(idFactura == 0) {
+        list.add(linea('Saldo Restante: ${det.saldoRestanteFormateado()}'));
+      }
       list.add(linea(''));
     }
+
+    if (tipoPago == 'Efectivo') {
+      list.add(linea('Pago: ${efectivoEntregadoFormateado()}'));
+      list.add(linea('Cambio: ${cambioEfectivoFormateado()}'));
+
+      list.add(linea(''));
+    }
+
+    list.add(linea('Tipo de Pago: $tipoPago'));
+
+    list.add(linea(''));
 
     list.add(linea('Total: ${totalFormateado()}'));
     list.add(linea('GRACIAS POR PREFIERIRNOS'));

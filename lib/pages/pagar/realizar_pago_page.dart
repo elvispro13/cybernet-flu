@@ -30,7 +30,7 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
   final efectivoEntregadoCtl = TextEditingController();
   final valorPagadoCtl = TextEditingController();
 
-  bool cargando = false;
+  bool cargando = true;
 
   @override
   void initState() {
@@ -43,7 +43,11 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
       if (res.success) {
         setState(() {
           cliente = res.data;
+          cargando = false;
         });
+      } else {
+        ref.read(appRouterProvider).pop();
+        ref.read(alertaProvider.notifier).state = res.message;
       }
     });
   }

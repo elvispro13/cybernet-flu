@@ -211,10 +211,12 @@ class Factura {
 
     list.add(linea(''));
 
-    list.add(linea('Pago: ${efectivoEntregadoFormateado()}'));
-    if(cambioEfectivo > 0) list.add(linea('Cambio: ${cambioEfectivoFormateado()}'));
+    if (tipoPago == 'Efectivo') {
+      list.add(linea('Pago: ${efectivoEntregadoFormateado()}'));
+      list.add(linea('Cambio: ${cambioEfectivoFormateado()}'));
 
-    list.add(linea(''));
+      list.add(linea(''));
+    }
 
     list.add(linea('Tipo de Pago: $tipoPago'));
 
@@ -226,7 +228,8 @@ class Factura {
     list.add(linea('Rango Autorizado de Emision:'));
     list.add(linea('${rango.numeroInicial} a ${rango.numeroFinal}'));
     list.add(linea('Fecha Limite de Emision:'));
-    list.add(linea('${rango.fechaLimite.day}/${rango.fechaLimite.month}/${rango.fechaLimite.year}'));
+    list.add(linea(
+        '${rango.fechaLimite.day}/${rango.fechaLimite.month}/${rango.fechaLimite.year}'));
     list.add(linea('GRACIAS POR PREFIERIRNOS'));
     list.add(linea('La factura es un beneficio'));
     list.add(linea('de todos, exijala!'));

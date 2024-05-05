@@ -11,6 +11,7 @@ class PagoDet {
   int idPago;
   int idSaldo;
   double monto;
+  double montoSaldo;
   String descripcion;
   String tipo;
   int creadoPor;
@@ -23,6 +24,7 @@ class PagoDet {
     required this.idPago,
     required this.idSaldo,
     required this.monto,
+    required this.montoSaldo,
     required this.descripcion,
     required this.tipo,
     required this.creadoPor,
@@ -36,6 +38,7 @@ class PagoDet {
         idPago: json["idPago"],
         idSaldo: json["idSaldo"],
         monto: json["Monto"]?.toDouble(),
+        montoSaldo: json["MontoSaldo"]?.toDouble(),
         descripcion: json["Descripcion"],
         tipo: json["Tipo"],
         creadoPor: json["CreadoPor"],
@@ -49,6 +52,7 @@ class PagoDet {
         "idPago": idPago,
         "idSaldo": idSaldo,
         "Monto": monto,
+        "MontoSaldo": montoSaldo,
         "Descripcion": descripcion,
         "Tipo": tipo,
         "CreadoPor": creadoPor,
@@ -60,5 +64,10 @@ class PagoDet {
   //Funciones
   String montoFormateado() {
     return formatoMoneda(numero: monto);
+  }
+
+  String saldoRestanteFormateado() {
+    final saldo = (montoSaldo - monto);
+    return formatoMoneda(numero: (saldo > 0 ? saldo : 0));
   }
 }

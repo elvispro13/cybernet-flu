@@ -41,7 +41,7 @@ class Variables {
         direccionEmpresa: json["DireccionEmpresa"],
         telefonoEmpresa: json["TelefonoEmpresa"],
         mensaje: json["Mensaje"],
-        versionMobil: json["VersionMobil"],
+        versionMobil: json["versionMobil"],
         creadoPor: json["CreadoPor"],
         modificadoPor: json["ModificadoPor"],
         fechaCreacion: DateTime.parse(json["FechaCreacion"]),

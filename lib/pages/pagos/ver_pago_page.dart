@@ -94,16 +94,22 @@ class _VerPagoPageState extends ConsumerState<VerPagoPage> {
             const SizedBox(
               height: 10,
             ),
-            Text(
-                'Efectivo entregado: ${widget.pago.efectivoEntregadoFormateado()}'),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-                'Cambio de efectivo: ${widget.pago.cambioEfectivoFormateado()}'),
-            const SizedBox(
-              height: 10,
-            ),
+            (widget.pago.tipoPago == 'Efectivo')
+                ? Column(
+                    children: [
+                      Text(
+                          'Efectivo entregado: ${widget.pago.efectivoEntregadoFormateado()}'),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                          'Cambio de efectivo: ${widget.pago.cambioEfectivoFormateado()}'),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
             Text('Total: ${widget.pago.totalFormateado()}'),
             const SizedBox(
               height: 10,
@@ -204,6 +210,18 @@ class _VerPagoPageState extends ConsumerState<VerPagoPage> {
                   Text(
                     'Monto: ${detalle.montoFormateado()}',
                   ),
+                  (widget.pago.idFactura == 0)
+                      ? Column(
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'Saldo Restante: ${detalle.saldoRestanteFormateado()}',
+                            ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),

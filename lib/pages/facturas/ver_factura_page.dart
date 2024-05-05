@@ -102,16 +102,22 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
             const SizedBox(
               height: 10,
             ),
-            Text(
-                'Efectivo entregado: ${widget.factura.efectivoEntregadoFormateado()}'),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-                'Cambio de efectivo: ${widget.factura.cambioEfectivoFormateado()}'),
-            const SizedBox(
-              height: 10,
-            ),
+            (widget.factura.tipoPago == 'Efectivo')
+                ? Column(
+                    children: [
+                      Text(
+                          'Efectivo entregado: ${widget.factura.efectivoEntregadoFormateado()}'),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                          'Cambio de efectivo: ${widget.factura.cambioEfectivoFormateado()}'),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
             Text('Total: ${widget.factura.subTotalFormateado()}'),
             const SizedBox(
               height: 10,
@@ -274,52 +280,52 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
 
   _botonImprimirPago(bool impresoraConectada) {
     return Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            child: ElevatedButton(
-              onPressed: impresoraConectada
-                  ? () async {
-                      await imprimir();
-                    }
-                  : () async {
-                      final impresora = _prefs!.getString('impresora');
-                      if (impresora == null) {
-                        modalGeneral(context, const ImpresoraConexion());
-                      } else {
-                        await conectarImpresora(ref: ref);
-                        if (_verificar != null) {
-                          _verificar!.cancel();
-                          _verificar = null;
-                        }
-                        _verificar = Timer(const Duration(seconds: 3), () {
-                          modalGeneral(context, const ImpresoraConexion());
-                          _verificar!.cancel();
-                          _verificar = null;
-                        });
+      children: [
+        const SizedBox(
+          height: 10,
+        ),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: ElevatedButton(
+            onPressed: impresoraConectada
+                ? () async {
+                    await imprimir();
+                  }
+                : () async {
+                    final impresora = _prefs!.getString('impresora');
+                    if (impresora == null) {
+                      modalGeneral(context, const ImpresoraConexion());
+                    } else {
+                      await conectarImpresora(ref: ref);
+                      if (_verificar != null) {
+                        _verificar!.cancel();
+                        _verificar = null;
                       }
-                    },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const FaIcon(FontAwesomeIcons.print),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  impresoraConectada
-                      ? const Text('Imprimir: Conectada')
-                      : const Text('Imprimir: No conectada'),
-                ],
-              ),
+                      _verificar = Timer(const Duration(seconds: 3), () {
+                        modalGeneral(context, const ImpresoraConexion());
+                        _verificar!.cancel();
+                        _verificar = null;
+                      });
+                    }
+                  },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const FaIcon(FontAwesomeIcons.print),
+                const SizedBox(
+                  width: 10,
+                ),
+                impresoraConectada
+                    ? const Text('Imprimir: Conectada')
+                    : const Text('Imprimir: No conectada'),
+              ],
             ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
-      );
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+      ],
+    );
   }
 }

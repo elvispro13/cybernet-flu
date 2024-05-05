@@ -60,4 +60,28 @@ class SaldosService {
     }
     return res;
   }
+
+  static Future<RespuestaModel> getSaldoPagoDet(
+    Login login,
+    int idPagoDet,
+  ) async {
+    final res = RespuestaModel();
+    final url = Uri.parse('${Environment.apiUrl}/saldo-pagodet/$idPagoDet');
+    try {
+      final response = await http.get(url, headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${login.accessToken}',
+      }).timeout(const Duration(seconds: 20));
+
+      if (response.statusCode == 200) {
+        res.success = true;
+        res.data = Saldo.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 401) {
+        res.message = jsonDecode(response.body)['message'];
+      }
+    } on Exception catch (e) {
+      res.message = e.toString();
+    }
+    return res;
+  }
 }
