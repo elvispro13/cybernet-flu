@@ -150,8 +150,8 @@ void modalGeneralInferiror(BuildContext context, Widget hijo) {
     pageBuilder: (_, __, ___) {
       return Center(
         child: Container(
-          width: SizeConfig.screenWidth! * 0.90,
-          margin: EdgeInsets.only(top: SizeConfig.screenHeight! * 0.30),
+          width: SizeConfig.screenWidth! * 0.95,
+          margin: EdgeInsets.only(top: SizeConfig.screenHeight! * 0.50),
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
@@ -160,6 +160,7 @@ void modalGeneralInferiror(BuildContext context, Widget hijo) {
             ),
           ),
           child: Container(
+            margin: const EdgeInsets.only(top: 20),
             width: double.infinity,
             height: double.infinity,
             alignment: Alignment.bottomCenter,

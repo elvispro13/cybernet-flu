@@ -1,7 +1,6 @@
 import 'package:cybernet/helpers/size_config.dart';
 import 'package:cybernet/helpers/utilidades.dart';
 import 'package:cybernet/helpers/widget_helpers.dart';
-import 'package:cybernet/modales/form_pagar_modal.dart';
 import 'package:cybernet/models_api/cliente_model.dart';
 import 'package:cybernet/models_api/factura_model.dart';
 import 'package:cybernet/models_api/pago_model.dart';
@@ -408,61 +407,59 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
   }
 
   _aplicarPago() {
+    if (!formKey.currentState!.validate()) return;
     final contexto = ref.read(contextoPaginaProvider);
-    modalGeneralInferiror(contexto!, const FormPagarModal());
-//     if (!formKey.currentState!.validate()) return;
-//     final contexto = ref.read(contextoPaginaProvider);
-//     mostrarConfirmacion(
-//       context: contexto!,
-//       titulo: 'Confirmar Pago',
-//       mensaje: '¿Desea aplicar el pago?',
-//       onConfirm: () async {
-//         setState(() {
-//           cargando = true;
-//         });
-//         final login = ref.read(loginProvider);
-//         final idCliente = ref.read(idClienteSaldosProvider);
-//         final RespuestaModel res = await PagarService.pagar(
-//           login: login,
-//           idCliente: idCliente,
-//           tipoPago: tipoPagoSelected,
-//           efectivoEntregado: (efectivoEntregadoCtl.text.isNotEmpty)
-//               ? double.parse(efectivoEntregadoCtl.text)
-//               : 0,
-//           valorPagado: double.parse(valorPagadoCtl.text),
-//         );
-//         setState(() {
-//           cargando = false;
-//         });
-//         if (res.success) {
-//           ref.read(alertaProvider.notifier).state = 'Pago Aplicado';
-//           ref.read(saldosPBuscarProvider.notifier).state = '';
-//           ref.invalidate(saldosPendientesProvider);
-//
-//           if (res.data['factura'] == 0) {
-//             final pago =
-//                 Pago.fromJson(res.data['pago'] as Map<String, dynamic>);
-//
-//             ref.read(idPagoProvider.notifier).state = pago.id;
-//             ref.read(appRouterProvider).goNamed(
-//                   'pagos.ver_pago',
-//                   extra: pago,
-//                 );
-//           } else {
-//             final factura =
-//                 Factura.fromJson(res.data['factura'] as Map<String, dynamic>);
-//
-//             ref.read(idFacturaProvider.notifier).state = factura.id;
-//             ref.read(appRouterProvider).goNamed(
-//                   'facturas.ver_factura',
-//                   extra: factura,
-//                 );
-//           }
-//         } else {
-//           ref.read(alertaProvider.notifier).state = res.message;
-//         }
-//         ref.read(appRouterProvider).pop();
-//       },
-//     );
+    mostrarConfirmacion(
+      context: contexto!,
+      titulo: 'Confirmar Pago',
+      mensaje: '¿Desea aplicar el pago?',
+      onConfirm: () async {
+        setState(() {
+          cargando = true;
+        });
+        final login = ref.read(loginProvider);
+        final idCliente = ref.read(idClienteSaldosProvider);
+        final RespuestaModel res = await PagarService.pagar(
+          login: login,
+          idCliente: idCliente,
+          tipoPago: tipoPagoSelected,
+          efectivoEntregado: (efectivoEntregadoCtl.text.isNotEmpty)
+              ? double.parse(efectivoEntregadoCtl.text)
+              : 0,
+          valorPagado: double.parse(valorPagadoCtl.text),
+        );
+        setState(() {
+          cargando = false;
+        });
+        if (res.success) {
+          ref.read(alertaProvider.notifier).state = 'Pago Aplicado';
+          ref.read(saldosPBuscarProvider.notifier).state = '';
+          ref.invalidate(saldosPendientesProvider);
+
+          if (res.data['factura'] == 0) {
+            final pago =
+                Pago.fromJson(res.data['pago'] as Map<String, dynamic>);
+
+            ref.read(idPagoProvider.notifier).state = pago.id;
+            ref.read(appRouterProvider).goNamed(
+                  'pagos.ver_pago',
+                  extra: pago,
+                );
+          } else {
+            final factura =
+                Factura.fromJson(res.data['factura'] as Map<String, dynamic>);
+
+            ref.read(idFacturaProvider.notifier).state = factura.id;
+            ref.read(appRouterProvider).goNamed(
+                  'facturas.ver_factura',
+                  extra: factura,
+                );
+          }
+        } else {
+          ref.read(alertaProvider.notifier).state = res.message;
+        }
+        ref.read(appRouterProvider).pop();
+      },
+    );
   }
 }
