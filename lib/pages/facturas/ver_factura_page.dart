@@ -279,6 +279,7 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
   }
 
   _botonImprimirPago(bool impresoraConectada) {
+    final contexto = ref.read(contextoPaginaProvider);
     return Column(
       children: [
         const SizedBox(
@@ -294,7 +295,7 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
                 : () async {
                     final impresora = _prefs!.getString('impresora');
                     if (impresora == null) {
-                      modalGeneral(context, const ImpresoraConexion());
+                      modalGeneral(contexto!, const ImpresoraConexion());
                     } else {
                       await conectarImpresora(ref: ref);
                       if (_verificar != null) {
@@ -302,7 +303,7 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
                         _verificar = null;
                       }
                       _verificar = Timer(const Duration(seconds: 3), () {
-                        modalGeneral(context, const ImpresoraConexion());
+                        modalGeneral(contexto!, const ImpresoraConexion());
                         _verificar!.cancel();
                         _verificar = null;
                       });
