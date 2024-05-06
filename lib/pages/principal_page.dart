@@ -1,10 +1,13 @@
+
 import 'package:bluetooth_print/bluetooth_print.dart';
 import 'package:cybernet/helpers/widget_helpers.dart';
 import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PrincipalPage extends ConsumerStatefulWidget {
   const PrincipalPage({super.key});
@@ -89,6 +92,30 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
                     },
                   )
                 : const SizedBox.shrink(),
+            ElevatedButton(
+              onPressed: () async {
+                final dir = await getExternalStorageDirectory();
+                // storage permission ask
+                // var status = await Permission.storage.status;
+                // if (!status.isGranted) {
+                //   await Permission.storage.request();
+                // }
+                final taskId = await FlutterDownloader.enqueue(
+                  // url: '${Environment.apiUrl}/factura/3401/print',
+                  url: 'http://iptvultra.site/wp-content/uploads/2022/10/cropped-cropped-iptv-ultra-e1664870880121-150x150.png',
+                  headers: {
+                    // 'Authorization': 'Bearer ${login.accessToken}',
+                  },
+                  savedDir: dir!.path,
+                  showNotification: true,
+                  openFileFromNotification: false,
+                );
+
+                ref.read(alertaProvider.notifier).state =
+                    'Descarga completa. $taskId';
+              },
+              child: const Text('Pruebas'),
+            ),
           ],
         ),
       ),
