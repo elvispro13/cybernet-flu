@@ -1,13 +1,16 @@
+import 'dart:io';
 
 import 'package:bluetooth_print/bluetooth_print.dart';
+import 'package:cybernet/global/environment.dart';
 import 'package:cybernet/helpers/widget_helpers.dart';
 import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:dio/dio.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PrincipalPage extends ConsumerStatefulWidget {
   const PrincipalPage({super.key});
@@ -17,6 +20,8 @@ class PrincipalPage extends ConsumerStatefulWidget {
 }
 
 class PrincipalPageState extends ConsumerState<PrincipalPage> {
+  double progress = 0;
+
   @override
   void initState() {
     super.initState();
@@ -94,31 +99,68 @@ class PrincipalPageState extends ConsumerState<PrincipalPage> {
                 : const SizedBox.shrink(),
             ElevatedButton(
               onPressed: () async {
-                final dir = await getExternalStorageDirectory();
-                // storage permission ask
-                // var status = await Permission.storage.status;
-                // if (!status.isGranted) {
-                //   await Permission.storage.request();
-                // }
-                final taskId = await FlutterDownloader.enqueue(
-                  // url: '${Environment.apiUrl}/factura/3401/print',
-                  url: 'http://iptvultra.site/wp-content/uploads/2022/10/cropped-cropped-iptv-ultra-e1664870880121-150x150.png',
-                  headers: {
-                    // 'Authorization': 'Bearer ${login.accessToken}',
-                  },
-                  savedDir: dir!.path,
-                  showNotification: true,
-                  openFileFromNotification: false,
-                );
-
-                ref.read(alertaProvider.notifier).state =
-                    'Descarga completa. $taskId';
+                await _downloadAndSavePDF(
+                    '${Environment.apiUrl}/factura/3401/print');
+                // await _compartir();
               },
-              child: const Text('Pruebas'),
+              child: Text('Pruebas: %$progress'),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _compartir() async {
+    final result = await Share.shareXFiles(
+        [XFile('/storage/emulated/0/Download/Facturas/factura.pdf')]);
+
+    if (result.status == ShareResultStatus.success) {
+      ref.read(alertaProvider.notifier).state = 'Archivo compartido';
+    } else {
+      ref.read(alertaProvider.notifier).state = 'Error al compartir archivo';
+    }
+  }
+
+  Future<bool> _requestStoragePermission() async {
+    if (await Permission.manageExternalStorage.isGranted) {
+      return true;
+    } else {
+      await Permission.manageExternalStorage.request();
+      return false;
+    }
+  }
+
+  Future<void> _downloadAndSavePDF(String url) async {
+    // Solicita permiso de almacenamiento
+    if (!(await _requestStoragePermission())) {
+      ref.read(alertaProvider.notifier).state =
+          'Permiso de almacenamiento denegado';
+      return;
+    }
+    final login = ref.watch(loginProvider);
+
+    // Obtiene la ruta de la carpeta de descargas
+    const path = '/storage/emulated/0/Download/Facturas/factura.pdf';
+
+    // Descarga el archivo PDF
+    final response = await Dio().get(url,
+        options: Options(responseType: ResponseType.bytes, headers: {
+          'Authorization': 'Bearer ${login.accessToken}',
+        }), onReceiveProgress: (received, total) {
+      setState(() {
+        progress = (received / total) * 100;
+      });
+    });
+
+    // Guarda el archivo PDF
+    final file = File(path);
+    if (!file.existsSync()) {
+      await file.create(recursive: true);
+    }
+    await file.writeAsBytes(response.data);
+
+    ref.read(alertaProvider.notifier).state =
+        'Descarga completa. Archivo guardado en $path';
   }
 }

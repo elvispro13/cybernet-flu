@@ -7,15 +7,10 @@ import 'package:cybernet/routes/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
-  await FlutterDownloader.initialize(
-    debug: true,
-    ignoreSsl: true,
-  );
   runApp(
     const ProviderScope(
       child: MyApp(),
