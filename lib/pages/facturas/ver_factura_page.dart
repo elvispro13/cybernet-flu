@@ -10,6 +10,7 @@ import 'package:cybernet/models_api/facturadet_model.dart';
 import 'package:cybernet/providers/factura_provider.dart';
 import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
+import 'package:cybernet/services/facturas_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -27,6 +28,7 @@ class VerFacturaPage extends ConsumerStatefulWidget {
 class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
   SharedPreferences? _prefs;
   Timer? _verificar;
+  bool _cargandoPDF = false;
 
   @override
   void initState() {
@@ -319,6 +321,34 @@ class _VerFacturaPageState extends ConsumerState<VerFacturaPage> {
                 impresoraConectada
                     ? const Text('Imprimir: Conectada')
                     : const Text('Imprimir: No conectada'),
+              ],
+            ),
+          ),
+        ),
+        //Boton para PDF
+        const SizedBox(
+          height: 10,
+        ),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: ElevatedButton(
+            onPressed: (_cargandoPDF) ? null : () async {
+              setState(() {
+                _cargandoPDF = true;
+              });
+              await FacturasService.descargarFacturaPDF(widget.factura, ref);
+              setState(() {
+                _cargandoPDF = false;
+              });
+            },
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FaIcon(FontAwesomeIcons.filePdf),
+                SizedBox(
+                  width: 10,
+                ),
+                Text('Compartir en PDF'),
               ],
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:cybernet/providers/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void mostrarAlerta(BuildContext context, String titulo, String mensaje) async {
@@ -476,4 +477,13 @@ LineText lineaCentrada(String texto) {
       content: texto,
       align: LineText.ALIGN_CENTER,
       linefeed: 1);
+}
+
+Future<bool> requerirPerimisoAlmacenamiento() async {
+  if (await Permission.manageExternalStorage.isGranted) {
+    return true;
+  } else {
+    await Permission.manageExternalStorage.request();
+    return false;
+  }
 }

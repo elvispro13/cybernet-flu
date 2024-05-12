@@ -254,8 +254,13 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
                   data: (data) {
                     return DropdownButtonFormField(
                       value: idServicio,
-                      validator: (valor) =>
-                          (valor! == 0) ? 'Servicio Requerido' : null,
+                      validator: (valor) => (valor! == 0 &&
+                              double.parse(valorPagadoCtl.text.isNotEmpty
+                                      ? valorPagadoCtl.text
+                                      : '0') >
+                                  cliente!.deudaTotal!)
+                          ? 'Servicio Requerido'
+                          : null,
                       items: <DropdownMenuItem<int>>[
                         DropdownMenuItem(
                           value: 0,

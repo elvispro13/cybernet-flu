@@ -34,8 +34,8 @@ class Login {
         usuario: json["usuario"],
         permisos: List<Permiso>.from(
             json["permisos"].map((x) => Permiso.fromJson(x))),
-        variables: Variables.fromJson(json["variables"]),
-        rango: Rango.fromJson(json["rango"]),
+        variables: (json["variables"] != null) ? Variables.fromJson(json["variables"]) : null,
+        rango: (json["rango"] != null) ? Rango.fromJson(json["rango"]) : null,
       );
 
   Map<String, dynamic> toJson() => {
