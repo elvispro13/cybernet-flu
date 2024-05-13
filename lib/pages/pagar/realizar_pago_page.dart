@@ -26,17 +26,26 @@ class RealizarPagoPage extends ConsumerStatefulWidget {
 class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
   Cliente? cliente;
   final formKey = GlobalKey<FormState>();
+  final formKeyDescuento = GlobalKey<FormState>();
   String tipoPagoSelected = '';
   int idServicio = 0;
   final efectivoEntregadoCtl = TextEditingController();
   final valorPagadoCtl = TextEditingController();
+  final descuentoCtl = TextEditingController();
 
   bool cargando = true;
 
   @override
   void initState() {
     super.initState();
+    _cargarInfo();
+  }
+
+  _cargarInfo() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      setState(() {
+        cargando = true;
+      });
       final login = ref.read(loginProvider);
       final idCliente = ref.read(idClienteSaldosProvider);
       final RespuestaModel res =
@@ -163,76 +172,276 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
   }
 
   _itemSaldo(Saldo saldo) {
-    return Card(
-      elevation: 2,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            margin: const EdgeInsets.all(10),
-            width: SizeConfig.screenWidth! * 0.10,
-            child: const Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FaIcon(FontAwesomeIcons.clock),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.all(8),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
+    return InkWell(
+      onTap: () {
+        modalGeneralInferiror(context, _acciones(saldo));
+      },
+      child: Card(
+        elevation: 2,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              margin: const EdgeInsets.all(10),
+              width: SizeConfig.screenWidth! * 0.10,
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    saldo.descripcion,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Monto: ${saldo.montoFormateado()}',
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        'Pagado: ${saldo.pagadoFormateado()}',
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Descuento: ${saldo.descuentoFormateado()}',
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        'Estado: ${saldo.estadoDet()}',
-                      ),
-                    ],
-                  ),
+                  FaIcon(FontAwesomeIcons.clock),
                 ],
               ),
             ),
-          )
-        ],
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      saldo.descripcion,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Monto: ${saldo.montoFormateado()}',
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Pagado: ${saldo.pagadoFormateado()}',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Descuento: ${saldo.descuentoFormateado()}',
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Estado: ${saldo.estadoDet()}',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _acciones(Saldo saldo) {
+    return Column(
+      children: [
+        const Text(
+          'Acciones a realizar',
+          style: TextStyle(fontSize: 20),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        btScreenPrincipal(
+          label: 'Condonar Saldo',
+          icono: const FaIcon(FontAwesomeIcons.ban),
+          onPressed: () {
+            Navigator.of(context).pop();
+            mostrarConfirmacion(
+              context: context,
+              titulo: 'Condonar Saldo',
+              mensaje: '¿Desea condonar el saldo?',
+              onConfirm: () async {
+                final res = await PagarService.condonar(
+                  login: ref.read(loginProvider),
+                  idSaldo: saldo.id,
+                );
+                if (res.success) {
+                  _recargar();
+                }
+                ref.read(alertaProvider.notifier).state = res.message;
+              },
+            );
+          },
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        (saldo.descuento == 0)
+            ? btScreenPrincipal(
+                label: 'Aplicar Descuento',
+                icono: const FaIcon(FontAwesomeIcons.plus),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  descuentoCtl.clear();
+                  modalGeneralInferiror(context, _aplicarDescuento(saldo));
+                },
+              )
+            : btScreenPrincipal(
+                label: 'Remover Descuento',
+                icono: const FaIcon(FontAwesomeIcons.minus),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  modalGeneralInferiror(context, _removerDescuento(saldo));
+                },
+              ),
+        const SizedBox(
+          height: 10,
+        ),
+      ],
+    );
+  }
+
+  Widget _aplicarDescuento(Saldo saldo) {
+    return Column(
+      children: [
+        const Text(
+          'Aplicar Descuento',
+          style: TextStyle(fontSize: 20),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        const Text('Descuento a aplicar'),
+        const SizedBox(
+          height: 10,
+        ),
+        SizedBox(
+          width: SizeConfig.screenWidth! * 0.90,
+          child: Center(
+            child: ListTile(
+              leading: const Icon(Icons.payments),
+              title: Form(
+                key: formKeyDescuento,
+                child: TextFormField(
+                  controller: descuentoCtl,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    hintText: 'Descuento a aplicar',
+                  ),
+                  validator: (valor) {
+                    if (valor!.isEmpty) {
+                      return 'Descuento Requerido';
+                    }
+                    return null;
+                  },
+                  textInputAction: TextInputAction.done,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            if (!formKeyDescuento.currentState!.validate()) return;
+            Navigator.of(context).pop();
+            final res = await PagarService.descuento(
+              login: ref.read(loginProvider),
+              idSaldo: saldo.id,
+              descuento: double.parse(descuentoCtl.text),
+            );
+            if (res.success) {
+              _recargar();
+            }
+            ref.read(alertaProvider.notifier).state = res.message;
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.blue),
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
+          ),
+          child: SizedBox(
+            width: SizeConfig.screenWidth! * 0.80,
+            height: 30,
+            child: const Center(
+              child: Text(
+                'APLICAR DESCUENTO',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _removerDescuento(Saldo saldo) {
+    return Column(
+      children: [
+        const Text(
+          'Remover Descuento',
+          style: TextStyle(fontSize: 20),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        const Text('¿Desea remover el descuento aplicado?'),
+        const SizedBox(
+          height: 10,
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            Navigator.of(context).pop();
+            final res = await PagarService.descuento(
+              login: ref.read(loginProvider),
+              idSaldo: saldo.id,
+              descuento: 0,
+            );
+            if (res.success) {
+              _recargar();
+            }
+            ref.read(alertaProvider.notifier).state = res.message;
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.blue),
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
+          ),
+          child: SizedBox(
+            width: SizeConfig.screenWidth! * 0.80,
+            height: 30,
+            child: const Center(
+              child: Text(
+                'REMOVER DESCUENTO',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -535,5 +744,11 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
         ref.read(appRouterProvider).pop();
       },
     );
+  }
+
+  _recargar() {
+    ref.invalidate(saldosPendientesProvider);
+    ref.invalidate(saldosPendientesPorClienteProvider);
+    _cargarInfo();
   }
 }

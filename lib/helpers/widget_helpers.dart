@@ -1,4 +1,3 @@
-import 'package:cybernet/helpers/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -141,47 +140,21 @@ void modalGeneral(BuildContext context, Widget hijo) {
 }
 
 void modalGeneralInferiror(BuildContext context, Widget hijo) {
-  showGeneralDialog(
+  showModalBottomSheet<dynamic>(
     context: context,
-    barrierLabel: "Barrier",
-    barrierDismissible: true,
-    barrierColor: Colors.black.withOpacity(0.5),
-    transitionDuration: const Duration(milliseconds: 700),
-    pageBuilder: (_, __, ___) {
-      return Center(
-        child: Container(
-          width: SizeConfig.screenWidth! * 0.95,
-          margin: EdgeInsets.only(top: SizeConfig.screenHeight! * 0.50),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(40),
-              topRight: Radius.circular(40),
+    isScrollControlled: true,
+    builder: (BuildContext context) {
+      return Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Wrap(
+          children: [
+            SizedBox(
+              child: Center(
+                child: hijo,
+              ),
             ),
-          ),
-          child: Container(
-            margin: const EdgeInsets.only(top: 20),
-            width: double.infinity,
-            height: double.infinity,
-            alignment: Alignment.bottomCenter,
-            child: hijo,
-          ),
-        ),
-      );
-    },
-    transitionBuilder: (_, anim, __, child) {
-      Tween<Offset> tween;
-      if (anim.status == AnimationStatus.reverse) {
-        tween = Tween(begin: const Offset(0, 1), end: Offset.zero);
-      } else {
-        tween = Tween(begin: const Offset(0, 1), end: Offset.zero);
-      }
-
-      return SlideTransition(
-        position: tween.animate(anim),
-        child: FadeTransition(
-          opacity: anim,
-          child: child,
+          ],
         ),
       );
     },
