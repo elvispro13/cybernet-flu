@@ -230,7 +230,7 @@ class Factura {
     list.add(linea('Fecha Limite de Emision:'));
     list.add(linea(
         '${rango.fechaLimite.day}/${rango.fechaLimite.month}/${rango.fechaLimite.year}'));
-    list.add(linea('GRACIAS POR PREFIERIRNOS'));
+    list.add(linea('GRACIAS POR PREFERIRNOS'));
     list.add(linea('La factura es un beneficio'));
     list.add(linea('de todos, exijala!'));
     list.add(linea('ORIGINAL: CLIENTE'));

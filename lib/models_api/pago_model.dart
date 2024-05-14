@@ -136,7 +136,7 @@ class Pago {
       list.add(linea('Producto/Servicio'));
       list.add(linea(det.descripcion));
       list.add(linea('Monto: ${det.montoFormateado()}'));
-      if(idFactura == 0) {
+      if (idFactura == 0) {
         list.add(linea('Saldo Restante: ${det.saldoRestanteFormateado()}'));
       }
       list.add(linea(''));
@@ -154,7 +154,7 @@ class Pago {
     list.add(linea(''));
 
     list.add(linea('Total: ${totalFormateado()}'));
-    list.add(linea('GRACIAS POR PREFIERIRNOS'));
+    list.add(linea('GRACIAS POR PREFERIRNOS'));
     list.add(linea(''));
 
     return list;
