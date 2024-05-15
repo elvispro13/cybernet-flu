@@ -11,7 +11,6 @@ class SaldoView {
   String nombre;
   String rtn;
   String estado;
-  String firebase;
   int creadoPor;
   int modificadoPor;
   DateTime fechaCreacion;
@@ -24,7 +23,6 @@ class SaldoView {
     required this.nombre,
     required this.rtn,
     required this.estado,
-    required this.firebase,
     required this.creadoPor,
     required this.modificadoPor,
     required this.fechaCreacion,
@@ -38,7 +36,6 @@ class SaldoView {
         nombre: json["Nombre"],
         rtn: json["RTN"],
         estado: json["Estado"],
-        firebase: json["Firebase"],
         creadoPor: json["CreadoPor"],
         modificadoPor: json["ModificadoPor"],
         fechaCreacion: DateTime.parse(json["FechaCreacion"]),
@@ -56,7 +53,6 @@ class SaldoView {
         "Nombre": nombre,
         "RTN": rtn,
         "Estado": estado,
-        "Firebase": firebase,
         "CreadoPor": creadoPor,
         "ModificadoPor": modificadoPor,
         "FechaCreacion": fechaCreacion.toIso8601String(),

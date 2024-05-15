@@ -11,7 +11,6 @@ class Cliente {
   String nombre;
   String rtn;
   String estado;
-  String firebase;
   int creadoPor;
   int modificadoPor;
   DateTime fechaCreacion;
@@ -23,7 +22,6 @@ class Cliente {
     required this.nombre,
     required this.rtn,
     required this.estado,
-    required this.firebase,
     required this.creadoPor,
     required this.modificadoPor,
     required this.fechaCreacion,
@@ -35,7 +33,6 @@ class Cliente {
         nombre: json["Nombre"],
         rtn: json["RTN"],
         estado: json["Estado"],
-        firebase: json["Firebase"],
         creadoPor: json["CreadoPor"],
         modificadoPor: json["ModificadoPor"],
         fechaCreacion: DateTime.parse(json["FechaCreacion"]),
@@ -47,7 +44,6 @@ class Cliente {
         "Nombre": nombre,
         "RTN": rtn,
         "Estado": estado,
-        "Firebase": firebase,
         "CreadoPor": creadoPor,
         "ModificadoPor": modificadoPor,
         "FechaCreacion": fechaCreacion.toIso8601String(),

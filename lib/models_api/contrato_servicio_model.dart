@@ -27,7 +27,6 @@ class ContratoServicio {
   String burstTime;
   String maxLimit;
   String estado;
-  String firebase;
   int creadoPor;
   int modificadoPor;
   DateTime fechaCreacion;
@@ -54,7 +53,6 @@ class ContratoServicio {
     required this.burstTime,
     required this.maxLimit,
     required this.estado,
-    required this.firebase,
     required this.creadoPor,
     required this.modificadoPor,
     required this.fechaCreacion,
@@ -83,7 +81,6 @@ class ContratoServicio {
         burstTime: json["BurstTime"],
         maxLimit: json["MaxLimit"],
         estado: json["Estado"],
-        firebase: json["Firebase"],
         creadoPor: json["CreadoPor"],
         modificadoPor: json["ModificadoPor"],
         fechaCreacion: DateTime.parse(json["FechaCreacion"]),
@@ -111,7 +108,6 @@ class ContratoServicio {
         "BurstTime": burstTime,
         "MaxLimit": maxLimit,
         "Estado": estado,
-        "Firebase": firebase,
         "CreadoPor": creadoPor,
         "ModificadoPor": modificadoPor,
         "FechaCreacion": fechaCreacion.toIso8601String(),
