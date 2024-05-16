@@ -716,14 +716,15 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
           cargando = false;
         });
         if (res.success) {
-          ref.read(alertaProvider.notifier).state = 'Pago Aplicado';
           ref.read(saldosPBuscarProvider.notifier).state = '';
           ref.invalidate(saldosPendientesProvider);
-
+          final pago = Pago.fromJson(res.data['pago'] as Map<String, dynamic>);
+          String mensaje = 'Pago Aplicado';
+          if (pago.tipoPago == 'Efectivo') {
+            mensaje += '\nCambio: ${pago.cambioEfectivoFormateado()}';
+          }
+          ref.read(alertaProvider.notifier).state = mensaje;
           if (res.data['factura'] == 0) {
-            final pago =
-                Pago.fromJson(res.data['pago'] as Map<String, dynamic>);
-
             ref.read(idPagoProvider.notifier).state = pago.id;
             ref.read(appRouterProvider).goNamed(
                   'pagos.ver_pago',
