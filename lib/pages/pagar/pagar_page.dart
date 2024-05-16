@@ -5,7 +5,6 @@ import 'package:cybernet/providers/index.dart';
 import 'package:cybernet/routes/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PagarPage extends ConsumerStatefulWidget {
   const PagarPage({super.key});
@@ -103,12 +102,6 @@ class PagarPageState extends ConsumerState<PagarPage> {
                 },
               )
             : const SizedBox(),
-        // IconButton(
-        //   icon: const Icon(Icons.payments),
-        //   onPressed: () {
-        //
-        //   },
-        // ),
       ],
     );
   }
@@ -116,16 +109,25 @@ class PagarPageState extends ConsumerState<PagarPage> {
   _item(SaldoView saldo) {
     return Card(
       elevation: 2,
+      color: (saldo.cantidadSaldosMorosos > 0)
+          ? Colors.red[100]
+          : Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             margin: const EdgeInsets.all(10),
             width: SizeConfig.screenWidth! * 0.10,
-            child: const Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FaIcon(FontAwesomeIcons.moneyBill),
+                Text(
+                  saldo.nombre[0],
+                  style: const TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue),
+                ),
               ],
             ),
           ),

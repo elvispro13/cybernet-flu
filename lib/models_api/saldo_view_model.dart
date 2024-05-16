@@ -16,6 +16,7 @@ class SaldoView {
   DateTime fechaCreacion;
   DateTime fechaModificacion;
   int cantidadSaldos;
+  int cantidadSaldosMorosos;
   double total;
 
   SaldoView({
@@ -28,6 +29,7 @@ class SaldoView {
     required this.fechaCreacion,
     required this.fechaModificacion,
     required this.cantidadSaldos,
+    required this.cantidadSaldosMorosos,
     required this.total,
   });
 
@@ -41,6 +43,7 @@ class SaldoView {
         fechaCreacion: DateTime.parse(json["FechaCreacion"]),
         fechaModificacion: DateTime.parse(json["FechaModificacion"]),
         cantidadSaldos: json["CantidadSaldos"],
+        cantidadSaldosMorosos: int.parse(json["CantidadSaldosMorosos"]),
         total: json["Total"] is int
             ? json["Total"].toDouble()
             : json["Total"] is double
@@ -58,6 +61,7 @@ class SaldoView {
         "FechaCreacion": fechaCreacion.toIso8601String(),
         "FechaModificacion": fechaModificacion.toIso8601String(),
         "CantidadSaldos": cantidadSaldos,
+        "CantidadSaldosMorosos": cantidadSaldosMorosos,
         "Total": total,
       };
 

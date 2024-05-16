@@ -178,6 +178,7 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
       },
       child: Card(
         elevation: 2,
+        color: (saldo.estado == 'MO') ? Colors.red[100] : Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
