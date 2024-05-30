@@ -488,7 +488,8 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
                                 child: Center(
                                   child: SizedBox(
                                     width: SizeConfig.screenWidth! * 0.60,
-                                    child: Text(e.descripcion),
+                                    child: Text(
+                                        '${e.descripcion} - ${e.precioFormateado()}'),
                                   ),
                                 ),
                               ),

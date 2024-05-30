@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cybernet/helpers/utilidades.dart';
+
 ContratoServicio contratoServicioFromJson(String str) =>
     ContratoServicio.fromJson(json.decode(str));
 
@@ -73,7 +75,9 @@ class ContratoServicio {
         precio: json["Precio"]?.toDouble(),
         diaPago: json["DiaPago"],
         fechaInicio: DateTime.parse(json["FechaInicio"]),
-        fechaFin: (json["FechaFin"] != null) ? DateTime.parse(json["FechaFin"]) : null,
+        fechaFin: (json["FechaFin"] != null)
+            ? DateTime.parse(json["FechaFin"])
+            : null,
         ip: json["IP"],
         idRouter: json["idRouter"],
         burstLimit: json["BurstLimit"],
@@ -113,4 +117,23 @@ class ContratoServicio {
         "FechaCreacion": fechaCreacion.toIso8601String(),
         "FechaModificacion": fechaModificacion.toIso8601String(),
       };
+
+  //Funciones
+  String getFechaInicio() {
+    return '${fechaInicio.day}/${fechaInicio.month}/${fechaInicio.year}';
+  }
+
+  String getFechaFin() {
+    return (fechaFin != null)
+        ? '${fechaFin!.day}/${fechaFin!.month}/${fechaFin!.year}'
+        : 'Indefinido';
+  }
+
+  String getEstado() {
+    return (estado == 'A') ? 'Activo' : 'Inactivo';
+  }
+
+  String precioFormateado() {
+    return formatoMoneda(numero: precio);
+  }
 }
