@@ -102,6 +102,27 @@ class _RealizarPagoPageState extends ConsumerState<RealizarPagoPage> {
               const SizedBox(
                 height: 10,
               ),
+              //Boton enviar mensaje por whatsapp
+              ElevatedButton(
+                onPressed: () {
+                  ref
+                      .read(appRouterProvider)
+                      .goNamed('pagar.realizar_pago.mensaje', extra: cliente);
+                },
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FaIcon(FontAwesomeIcons.whatsapp),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text('Enviar Mensaje'),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
               Form(
                 key: formKey,
                 child: Column(
